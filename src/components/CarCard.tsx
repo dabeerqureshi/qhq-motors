@@ -104,11 +104,11 @@ export function CarCard({
         >
           <Image
             src={car.image}
-            alt={`${car.name} ${car.variant} automatic car rental in Chenab Nagar (Rabwah)`}
+            alt={`${car.name} ${car.variant} rental car in Chenab Nagar (Rabwah)`}
             width={900}
             height={420}
             loading={index < 2 ? "eager" : "lazy"}
-            className="w-full drop-shadow-[0_26px_38px_rgba(0,0,0,0.6)]"
+            className="w-full rounded-2xl drop-shadow-[0_26px_38px_rgba(0,0,0,0.6)]"
           />
         </motion.div>
 

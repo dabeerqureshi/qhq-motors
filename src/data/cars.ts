@@ -84,7 +84,7 @@ export const CARS: Car[] = [
     luggage: "3 large bags + 2 cabin bags",
     colorName: "Pearl White",
     colorHex: "#E7E9EE",
-    image: "/cars/toyota-corolla-altis.svg",
+    image: "/cars/toyota-corolla-altis.jpeg",
     blurb:
       "Pakistan's most trusted sedan — smooth, spacious and effortless to drive in traffic.",
     description:
@@ -107,9 +107,9 @@ export const CARS: Car[] = [
       "Long drives",
     ],
     rates: {
-      daily: 6500,
-      weekly: 39000,
-      monthly: 129000,
+      daily: 6000,
+      weekly: 36000,
+      monthly: 120000,
       freeKmPerDay: 120,
       extraKmRate: 32,
       securityDeposit: 20000,
@@ -142,7 +142,7 @@ export const CARS: Car[] = [
     luggage: "2 medium bags + 1 cabin bag",
     colorName: "Metallic Silver",
     colorHex: "#B9BEC7",
-    image: "/cars/suzuki-alto.svg",
+    image: "/cars/suzuki-alto.jpeg",
     blurb:
       "The most economical automatic in Pakistan — perfect for town errands and short visits.",
     description:
@@ -165,9 +165,9 @@ export const CARS: Car[] = [
       "Short stays",
     ],
     rates: {
-      daily: 3800,
-      weekly: 22000,
-      monthly: 78000,
+      daily: 5000,
+      weekly: 30000,
+      monthly: 100000,
       freeKmPerDay: 100,
       extraKmRate: 22,
       securityDeposit: 12000,

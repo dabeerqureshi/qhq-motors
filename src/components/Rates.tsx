@@ -29,7 +29,7 @@ export function Rates() {
   return (
     <section
       id="rates"
-      className="relative border-b border-white/5 bg-ink-900/40 py-20 lg:py-28"
+      className="relative overflow-hidden border-b border-white/5 bg-ink-900/40 py-20 lg:py-28"
     >
       <div className="absolute top-1/3 -left-24 -z-10 size-[26rem] rounded-full bg-gold-500/12 blur-[120px]" />
 
@@ -38,14 +38,14 @@ export function Rates() {
           eyebrow="Rental packages & rates"
           title="Pricing you can trust —"
           highlight="no hidden charges"
-          description="Pick the package that fits your stay. All rates are in Pakistani Rupees, include free kilometres every day and free delivery inside Chenab Nagar (Rabwah). Fuel and motorway tolls are extra."
+          description="Pick the package that fits your stay — the per-day rate drops automatically the longer you book (7+ days unlock weekly pricing, 30+ days monthly pricing). All rates are in Pakistani Rupees, include free kilometres every day and free delivery inside Chenab Nagar (Rabwah). Fuel and motorway tolls are extra."
         />
 
         <RevealGroup className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { label: "Daily from", value: cheapest?.rates.daily ?? 3800 },
-            { label: "Weekly from", value: cheapest?.rates.weekly ?? 22000 },
-            { label: "Monthly from", value: cheapest?.rates.monthly ?? 78000 },
+            { label: "Daily from", value: cheapest?.rates.daily ?? 5000 },
+            { label: "Weekly from", value: cheapest?.rates.weekly ?? 30000 },
+            { label: "Monthly from", value: cheapest?.rates.monthly ?? 100000 },
             {
               label: "Deposit from",
               value: cheapest?.rates.securityDeposit ?? 12000,

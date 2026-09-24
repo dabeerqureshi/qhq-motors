@@ -85,8 +85,18 @@ export function openWhatsApp(
     pickup: details?.pickup,
   });
 
-  if (typeof window !== "undefined") {
-    window.open(url, "_blank", "noopener,noreferrer");
+  if (typeof document !== "undefined") {
+    /* Trigger a real link navigation instead of window.open — behaves
+       identically on mobile (opens the WhatsApp app) and desktop (new tab),
+       and is far less likely to be blocked by popup filters. */
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
   return url;
 }

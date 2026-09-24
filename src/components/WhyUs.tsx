@@ -49,7 +49,7 @@ export function WhyUs() {
   return (
     <section
       id="why-us"
-      className="relative border-b border-white/5 py-20 lg:py-28"
+      className="relative overflow-hidden border-b border-white/5 py-20 lg:py-28"
     >
       <div className="absolute top-20 -right-24 -z-10 size-[26rem] rounded-full bg-gold-500/10 blur-[130px]" />
 

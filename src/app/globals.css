@@ -65,6 +65,7 @@
 @keyframes gradient-pan {
   0%, 100% { background-position: 0% 50% }
   50% { background-position: 100% 50% }
+}
 
 /* ------------------------------------------------------------------
    Base
@@ -89,7 +90,10 @@
     background-color: var(--color-ink-950);
     color: #e8ecf5;
     font-family: var(--font-sans);
+    /* hidden keeps older browsers safe; clip stops all horizontal
+       panning (including programmatic scrolls) on modern ones. */
     overflow-x: hidden;
+    overflow-x: clip;
   }
 
   ::selection {
@@ -250,6 +254,4 @@
       linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
     background-size: 56px 56px;
   }
-}
-
 }

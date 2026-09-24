@@ -18,6 +18,7 @@ import { useFleet } from "@/lib/fleet";
 import { logger } from "@/lib/logger";
 import { cn, formatForeign, formatPKR } from "@/lib/utils";
 import { buildBookingMessage, openWhatsApp } from "@/lib/whatsapp";
+import { priceForDays } from "@/lib/pricing";
 
 type PlanKey = "daily" | "weekly" | "monthly";
 
@@ -36,26 +37,31 @@ export function CostCalculator() {
 
   const quote = useMemo(() => {
     if (!car) return null;
-    const baseRate = car.rates[plan];
-    const days = plan === "daily" ? 1 : plan === "weekly" ? 7 : 30;
-    const base = baseRate * units;
-    const includedKm = car.rates.freeKmPerDay * days * units;
+    const daysPerUnit = plan === "daily" ? 1 : plan === "weekly" ? 7 : 30;
+    const totalDays = daysPerUnit * units;
+    /* Best price for the whole stay — the per-day rate drops automatically
+       the longer you book (weekly/monthly packages kick in). */
+    const base = priceForDays(car, totalDays);
+    const includedKm = car.rates.freeKmPerDay * totalDays;
     const extra = extraKm > includedKm ? extraKm - includedKm : 0;
     const extraCost = extra * car.rates.extraKmRate;
     const driverFee = withDriver
-      ? (plan === "daily" ? 2500 : 1800) * days * units
+      ? (plan === "daily" ? 2500 : 1800) * totalDays
       : 0;
     const total = base + extraCost + driverFee;
+    const straightDaily = totalDays * car.rates.daily;
 
     return {
       base,
-      days,
+      daysPerUnit,
+      totalDays,
       includedKm,
       extra,
       extraCost,
       driverFee,
       total,
-      perDay: Math.round(total / (days * units)),
+      perDay: Math.round(base / totalDays),
+      save: Math.max(0, straightDaily - base),
       deposit: car.rates.securityDeposit,
     };
   }, [car, plan, units, extraKm, withDriver]);
@@ -73,10 +79,10 @@ export function CostCalculator() {
       buildBookingMessage({
         car,
         plan,
-        days: quote.days * units,
+        days: quote.totalDays,
         withDriver,
         notes: [
-          `Rental units: ${units} × ${quote.days} days`,
+          `Rental duration: ${quote.totalDays} days`,
           `Planned kilometres: ${extraKm} km (free allowance ${quote.includedKm} km)`,
           `Estimated total: ${formatPKR(quote.total)}`,
           "Please confirm availability and the final price.",
@@ -97,7 +103,7 @@ export function CostCalculator() {
           eyebrow="Price calculator"
           title="Know your total"
           highlight="before you book"
-          description="Slide, tap and see exactly what your rental will cost. The estimate uses our published live rates — no registration, no email, no spam."
+          description="Slide, tap and see exactly what your rental will cost. The estimate uses our published live rates and automatically applies a lower per-day rate the longer you book — no registration, no email, no spam."
         />
 
         <Reveal delay={0.1} className="mt-10">
@@ -270,11 +276,19 @@ export function CostCalculator() {
                 {quote ? formatForeign(quote.total, "AED") : "—"}
               </p>
 
+              {quote && quote.save > 0 && (
+                <p className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-[#25d366]/12 px-3 py-1.5 text-[11.5px] font-bold text-[#4ade80]">
+                  <Sparkles size={12} />
+                  You save {formatPKR(quote.save)} — per-day rate drops on
+                  longer bookings
+                </p>
+              )}
+
               <dl className="mt-5 space-y-2.5 text-[12.5px]">
                 {quote &&
                   [
                     {
-                      k: `Vehicle rent (${units} × ${quote.days} days)`,
+                      k: `Vehicle rent (${quote.totalDays} days)`,
                       v: formatPKR(quote.base),
                     },
                     { k: "Free kilometres", v: `${quote.includedKm} km` },

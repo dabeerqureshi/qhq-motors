@@ -25,7 +25,7 @@ export const FAQS: Faq[] = [
   {
     question: "What are your daily, weekly and monthly rates?",
     answer:
-      "Daily rentals start from Rs 3,800 for the Suzuki Alto Automatic and Rs 6,500 for the Toyota Corolla Altis Automatic. Weekly packages start at Rs 22,000 and monthly packages at Rs 78,000 — including 100 to 120 free kilometres per day. Message us on WhatsApp for a firm quote.",
+      "Daily rentals start from Rs 5,000 for the Suzuki Alto Automatic and Rs 6,000 for the Toyota Corolla Altis Automatic. The per-day rate drops the longer you book — weekly packages start at Rs 30,000 (7 days) and monthly packages at Rs 100,000 (30 days) — including 100 to 120 free kilometres per day. Message us on WhatsApp for a firm quote.",
   },
   {
     question: "Can overseas Pakistanis book from abroad?",

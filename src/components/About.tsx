@@ -15,7 +15,7 @@ export function About() {
   return (
     <section
       id="about"
-      className="relative border-b border-white/5 bg-ink-900/40 py-20 lg:py-28"
+      className="relative overflow-hidden border-b border-white/5 bg-ink-900/40 py-20 lg:py-28"
     >
       <div className="container-x">
         <div className="grid items-start gap-12 lg:grid-cols-2">

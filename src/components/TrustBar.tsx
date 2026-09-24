@@ -19,7 +19,7 @@ export function TrustBar() {
   return (
     <section
       aria-label="Why guests trust QHQ Motors"
-      className="relative border-y border-white/8 bg-ink-900/60 py-4"
+      className="relative overflow-hidden border-y border-white/8 bg-ink-900/60 py-4"
     >
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-ink-950 to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-ink-950 to-transparent" />

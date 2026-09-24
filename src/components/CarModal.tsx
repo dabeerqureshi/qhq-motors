@@ -92,10 +92,10 @@ export function CarModal({
               <div className="relative mb-6 rounded-2xl border border-white/8 bg-gradient-to-b from-ink-800/60 to-ink-950/40 p-4">
                 <Image
                   src={car.image}
-                  alt={`${car.name} ${car.variant} — automatic rental car in Chenab Nagar`}
+                  alt={`${car.name} ${car.variant} rental car in Chenab Nagar`}
                   width={900}
                   height={420}
-                  className="w-full"
+                  className="w-full rounded-2xl"
                 />
                 <div className="road-stripes mx-auto mt-2 h-1 w-2/3 rounded-full opacity-60" />
               </div>

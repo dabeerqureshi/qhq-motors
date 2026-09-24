@@ -14,7 +14,10 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative border-b border-white/5 py-20 lg:py-28">
+    <section
+      id="faq"
+      className="relative overflow-hidden border-b border-white/5 py-20 lg:py-28"
+    >
       <div className="absolute top-1/4 -left-24 -z-10 size-[24rem] rounded-full bg-sky-500/10 blur-[120px]" />
 
       <div className="container-x">

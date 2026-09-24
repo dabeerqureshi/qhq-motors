@@ -13,7 +13,6 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SITE } from "@/data/site";
-import { logger } from "@/lib/logger";
 import { cn } from "@/lib/utils";
 import { whatsAppUrl } from "@/lib/whatsapp";
 
@@ -26,6 +25,9 @@ export const NAV_LINKS = [
   { href: "#faq", label: "FAQ" },
   { href: "#contact", label: "Contact" },
 ];
+
+export const HEADER_WHATSAPP_MESSAGE =
+  "Assalam-o-Alaikum QHQ Motors, I would like to book a car. Please share availability and rates.";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -71,12 +73,6 @@ export function Header() {
       document.body.style.overflow = "";
     };
   }, [open]);
-
-  function openWhatsAppChat(source: string) {
-    logger.info("cta.click", "Header WhatsApp button clicked", { source });
-    window.open(whatsAppUrl(), "_blank", "noopener,noreferrer");
-  }
-
 
   return (
     <>
@@ -189,13 +185,14 @@ export function Header() {
             >
               <Phone size={14} /> Call
             </a>
-            <button
-              type="button"
-              onClick={() => openWhatsAppChat("header-desktop")}
+            <a
+              href={whatsAppUrl(HEADER_WHATSAPP_MESSAGE)}
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden items-center gap-2 rounded-full bg-gradient-to-br from-gold-300 via-gold-400 to-gold-600 px-5 py-2.5 text-[13px] font-extrabold text-ink-950 shadow-[0_10px_30px_-12px_rgba(229,174,60,0.8)] transition hover:brightness-110 active:scale-95 md:flex"
             >
               <CalendarCheck size={15} /> Book on WhatsApp
-            </button>
+            </a>
             <button
               type="button"
               onClick={() => setOpen(true)}
@@ -265,16 +262,15 @@ export function Header() {
                 >
                   <Phone size={15} /> {SITE.phone.display}
                 </a>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setOpen(false);
-                    openWhatsAppChat("header-mobile");
-                  }}
+                <a
+                  href={whatsAppUrl(HEADER_WHATSAPP_MESSAGE)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
                   className="flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-br from-[#2ee06f] to-[#128c7e] py-3 text-sm font-extrabold text-white"
                 >
                   <MessageCircle size={16} /> Book on WhatsApp
-                </button>
+                </a>
                 <p className="pt-1 text-center text-[11px] leading-relaxed text-slate-500">
                   Chenab Nagar (Rabwah), Punjab, Pakistan · Open 24/7
                 </p>

@@ -64,7 +64,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="relative border-b border-white/5 py-20 lg:py-28"
+      className="relative overflow-hidden border-b border-white/5 py-20 lg:py-28"
     >
       <div className="absolute inset-x-0 top-0 -z-10 h-64 bg-gradient-to-b from-ink-900/60 to-transparent" />
 
@@ -77,7 +77,7 @@ export function Contact() {
         />
 
         <div className="mt-12 grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
-          <div className="space-y-4">
+          <div className="min-w-0 space-y-4">
             <RevealGroup className="space-y-4">
               <RevealItem>
                 <a
@@ -180,7 +180,7 @@ export function Contact() {
             </Reveal>
           </div>
 
-          <div>
+          <div className="min-w-0">
             <Reveal direction="left">
               <div className="rounded-3xl border border-white/10 bg-ink-900/50 p-5 sm:p-6">
                 <h3 className="font-display text-xl font-extrabold text-white">

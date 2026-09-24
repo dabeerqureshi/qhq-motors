@@ -22,7 +22,7 @@ const sora = Sora({
   display: "swap",
 });
 
-const DESCRIPTION = `${SITE.shortDescription} 100% automatic cars, daily / weekly / monthly rates from Rs 3,800, free delivery in Chenab Nagar & Rabwah, and 24/7 meet-and-greet airport transfers.`;
+const DESCRIPTION = `${SITE.shortDescription} 100% automatic cars, daily / weekly / monthly rates from Rs 5,000, free delivery in Chenab Nagar & Rabwah, and 24/7 meet-and-greet airport transfers.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),

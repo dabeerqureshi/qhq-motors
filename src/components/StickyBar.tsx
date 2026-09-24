@@ -57,7 +57,7 @@ export function StickyBar() {
                 Need a car in Chenab Nagar?
               </p>
               <p className="mt-1 text-[11.5px] leading-relaxed text-slate-400">
-                WhatsApp us your dates — automatic cars from 3,800 PKR per day
+                WhatsApp us your dates — automatic cars from 5,000 PKR per day
                 with free delivery.
               </p>
             </motion.div>

@@ -93,7 +93,7 @@ export default function OpengraphImage() {
               gap: 28,
             }}
           >
-            <span>from Rs 3,800/day</span>
+            <span>from Rs 5,000/day</span>
             <span>·</span>
             <span>Free delivery</span>
             <span>·</span>

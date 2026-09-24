@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-/** Format a number as PKR, e.g. 6500 -> "Rs 6,500". */
+/** Format a number as PKR, e.g. 6000 -> "Rs 6,000". */
 export function formatPKR(amount: number): string {
   return `${SITE.currency.symbol} ${new Intl.NumberFormat("en-PK").format(amount)}`;
 }

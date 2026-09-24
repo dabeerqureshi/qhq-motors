@@ -221,7 +221,7 @@ export function emptyCar(): Car {
     rates: {
       daily: 5000,
       weekly: 30000,
-      monthly: 99000,
+      monthly: 100000,
       freeKmPerDay: 100,
       extraKmRate: 25,
       securityDeposit: 15000,

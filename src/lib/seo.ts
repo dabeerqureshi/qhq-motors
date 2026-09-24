@@ -25,7 +25,7 @@ export function localBusinessSchema() {
     email: SITE.email,
     image: `${SITE.url}/og-image.svg`,
     logo: `${SITE.url}/logo.svg`,
-    priceRange: "Rs 3,800 – Rs 129,000",
+    priceRange: "Rs 5,000 – Rs 120,000",
     currenciesAccepted: "PKR",
     paymentAccepted: "Cash, Bank Transfer, Easypaisa, JazzCash",
     slogan: "Automatic cars, honest rates, airport pickup 24/7.",
@@ -93,7 +93,7 @@ export function localBusinessSchema() {
           priceCurrency: SITE.currency.code,
           priceSpecification: {
             "@type": "UnitPriceSpecification",
-            price: 3800,
+            price: 5000,
             priceCurrency: SITE.currency.code,
             unitCode: "DAY",
           },
@@ -105,7 +105,7 @@ export function localBusinessSchema() {
           priceCurrency: SITE.currency.code,
           priceSpecification: {
             "@type": "UnitPriceSpecification",
-            price: 22000,
+            price: 30000,
             priceCurrency: SITE.currency.code,
             unitCode: "WEE",
           },
@@ -118,7 +118,7 @@ export function localBusinessSchema() {
           priceCurrency: SITE.currency.code,
           priceSpecification: {
             "@type": "UnitPriceSpecification",
-            price: 78000,
+            price: 100000,
             priceCurrency: SITE.currency.code,
             unitCode: "MON",
           },

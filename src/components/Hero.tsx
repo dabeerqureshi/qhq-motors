@@ -51,6 +51,9 @@ export function Hero({ cars }: { cars: Car[] }) {
   );
 
   const heroCar = cars[0];
+  const fromRate = cars.length
+    ? Math.min(...cars.map((c) => c.rates.daily))
+    : 5000;
 
   return (
     <section
@@ -104,7 +107,7 @@ export function Hero({ cars }: { cars: Car[] }) {
               the Toyota Corolla Altis and Suzuki Alto — with honest daily,
               weekly and monthly rates from{" "}
               <strong className="font-bold text-gold-300">
-                {formatPKR(3800)}
+                {formatPKR(fromRate)}
               </strong>
               . Free delivery in Chenab Nagar &amp; Rabwah, plus{" "}
               <strong className="font-bold text-white">
@@ -218,11 +221,11 @@ export function Hero({ cars }: { cars: Car[] }) {
                   >
                     <Image
                       src={heroCar.image}
-                      alt={`${heroCar.name} ${heroCar.variant} automatic rental in Chenab Nagar, Pakistan`}
+                      alt={`${heroCar.name} ${heroCar.variant} rental in Chenab Nagar, Pakistan`}
                       width={900}
                       height={420}
                       priority
-                      className="relative w-full drop-shadow-[0_36px_60px_rgba(0,0,0,0.65)]"
+                      className="relative w-full rounded-2xl drop-shadow-[0_36px_60px_rgba(0,0,0,0.65)]"
                     />
                   </motion.div>
 
