@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# QHQ Motors — One-Page Car Rental Website
 
-## Getting Started
+SEO-optimized, animated one-page site for **QHQ Motors**, automatic car rental in
+Chenab Nagar (Rabwah), Punjab — with WhatsApp booking, cost calculator, airport
+pickup info, and a PIN-gated fleet admin panel.
 
-First, run the development server:
+- **Stack:** Next.js 15 (App Router) · TypeScript · Tailwind CSS v4 · Framer Motion · lucide-react
+- **Routing:** fully static — `/`, `/admin`, `sitemap.xml`, `robots.txt`, auto-generated OG image.
+- **Live domain:** `https://qhqmotors.com`
+
+## Develop
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Checks
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx tsc --noEmit   # types
+npx eslint         # lint
+npm run build      # production build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project layout
 
-## Learn More
+```
+src/
+├── app/
+│   ├── page.tsx             # section order: Header → Hero → TrustBar → Fleet →
+│   │                        #   WhyUs → Rates → Airport → CostCalculator →
+│   │                        #   About → FAQ → Contact → Footer → StickyBar
+│   ├── layout.tsx           # metadata, JSON-LD, self-hosted fonts (next/font)
+│   ├── admin/page.tsx       # /admin (noindex)
+│   ├── sitemap.ts robots.ts opengraph-image.tsx
+├── components/              # Hero, Fleet, CarCard, CarModal, AdminPanel, …
+├── data/                    # ← edit content here (code-level CMS)
+│   ├── cars.ts              # fleet: prices, specs, availability, photos
+│   ├── site.ts              # brand, address, phone/WhatsApp, socials, SEO url
+│   ├── plans.ts             # rental plans + rates
+│   └── faqs.ts              # FAQ entries (also feed FAQPage JSON-LD)
+└── lib/                     # fleet (localStorage store), seo (JSON-LD),
+                             #   whatsapp (wa.me deep links), utils, logger
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Admin panel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Visit `/admin` and enter the PIN (default `QHQ-2026` — change `ADMIN_PIN` in
+`src/components/AdminPanel.tsx` before going live).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Add / edit / delete cars, toggle availability — stored in **localStorage**
+  (instant preview on your device only).
+- **Copy cars.ts block** generates the TypeScript array for `src/data/cars.ts`;
+  paste it there and push to make changes permanent for all visitors.
+- Export JSON / Reset to shipped fleet.
 
-## Deploy on Vercel
+## Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** — Vercel deploy + Hostinger DNS
+(`qhqmotors.com`) + verification checklist.
