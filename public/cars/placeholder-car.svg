@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" role="img" aria-label="Automatic rental car illustration">
+  <defs>
+    <linearGradient id="pb" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f5f7fa"/>
+      <stop offset="45%" stop-color="#cfd6e1"/>
+      <stop offset="100%" stop-color="#9aa4b4"/>
+    </linearGradient>
+    <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3a5069"/>
+      <stop offset="100%" stop-color="#0d1621"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="450" cy="352" rx="300" ry="24" fill="#000" opacity="0.28"/>
+  <path d="M80 302 C64 302 54 290 54 276 C54 254 66 244 98 238 L206 222 C244 214 278 194 314 166 C338 148 362 140 394 140 L528 140 C560 140 584 150 604 168 L670 226 L792 240 C830 245 850 256 850 278 C850 292 842 302 826 302 Z"
+        fill="url(#pb)" stroke="#8d97a8" stroke-width="2"/>
+  <path d="M334 168 C350 154 370 148 398 148 L468 148 L468 206 L294 206 C306 190 320 177 334 168 Z" fill="url(#pg)"/>
+  <path d="M486 148 L526 148 C550 148 568 156 582 168 L614 202 L486 202 Z" fill="url(#pg)"/>
+  <rect x="468" y="144" width="18" height="62" fill="#d5dbe4"/>
+  <rect x="290" y="200" width="340" height="5" rx="2.5" fill="#e5ae3c" opacity="0.85"/>
+  <path d="M56 258 L118 246 L124 272 L58 278 Z" fill="#ffffff" stroke="#c3cbd8" stroke-width="2"/>
+  <path d="M808 258 L850 264 L850 284 L808 278 Z" fill="#e5484d"/>
+  <g fill="none" stroke="#2b3240" stroke-width="3">
+    <circle cx="212" cy="302" r="60" fill="#1b2029"/>
+    <circle cx="212" cy="302" r="32" fill="#cdd4de"/>
+    <circle cx="688" cy="302" r="60" fill="#1b2029"/>
+    <circle cx="688" cy="302" r="32" fill="#cdd4de"/>
+  </g>
+  <text x="450" y="392" font-family="system-ui, sans-serif" font-size="22" font-weight="600" fill="#e5ae3c" text-anchor="middle" letter-spacing="6">QHQ MOTORS</text>
+</svg>

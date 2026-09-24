@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="QHQ Motors — Automatic Car Rental in Chenab Nagar, Pakistan">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#04060d"/>
+      <stop offset="55%" stop-color="#0a1020"/>
+      <stop offset="100%" stop-color="#151d33"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f3dc9c"/>
+      <stop offset="50%" stop-color="#e5ae3c"/>
+      <stop offset="100%" stop-color="#bd741a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="70%" r="55%">
+      <stop offset="0%" stop-color="#e5ae3c" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#e5ae3c" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- gold frame -->
+  <rect x="26" y="26" width="1148" height="578" rx="26" fill="none" stroke="url(#gold)" stroke-width="2" opacity="0.55"/>
+
+  <!-- logo mark -->
+  <g transform="translate(78,64)">
+    <rect x="0" y="0" width="64" height="64" rx="16" fill="#0e1526" stroke="url(#gold)" stroke-width="2"/>
+    <path d="M12 40 C12 35 15 33 21 32 L26 32 C30 26 34 23 40 23 L50 23 C53 23 56 25 57 29 L60 34 C61 36 60 38 58 38 L12 38 Z"
+          fill="none" stroke="url(#gold)" stroke-width="3.4" stroke-linejoin="round"/>
+    <circle cx="22" cy="44" r="6" fill="none" stroke="url(#gold)" stroke-width="3.4"/>
+    <circle cx="48" cy="44" r="6" fill="none" stroke="url(#gold)" stroke-width="3.4"/>
+  </g>
+
+  <text x="162" y="112" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="40" font-weight="800" fill="#f6f8fc" letter-spacing="1">QHQ MOTORS</text>
+  <text x="164" y="140" font-family="system-ui, sans-serif" font-size="17" fill="#9aa4b4" letter-spacing="4">CHENAB NAGAR · RABWAH · PAKISTAN</text>
+
+  <!-- headline -->
+  <text x="78" y="270" font-family="system-ui, sans-serif" font-size="62" font-weight="800" fill="#f6f8fc">Automatic Car Rental</text>
+  <text x="78" y="342" font-family="system-ui, sans-serif" font-size="62" font-weight="800" fill="url(#gold)">in Chenab Nagar</text>
+  <text x="78" y="400" font-family="system-ui, sans-serif" font-size="26" fill="#c3cbd8">100% automatic fleet · Daily, weekly &amp; monthly rates</text>
+  <text x="78" y="438" font-family="system-ui, sans-serif" font-size="26" fill="#c3cbd8">24/7 airport pickup · Lahore · Faisalabad · Islamabad</text>
+
+  <!-- pills -->
+  <g font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#04060d">
+    <rect x="78" y="480" width="222" height="52" rx="26" fill="url(#gold)"/>
+    <text x="189" y="513" text-anchor="middle">Toyota Corolla Altis</text>
+    <rect x="318" y="480" width="196" height="52" rx="26" fill="#0e1526" stroke="url(#gold)" stroke-width="2"/>
+    <text x="416" y="513" text-anchor="middle" fill="url(#gold)">Suzuki Alto VXL</text>
+  </g>
+
+  <!-- whatsapp -->
+  <g transform="translate(78,556)">
+    <rect width="392" height="0" fill="none"/>
+    <text font-family="system-ui, sans-serif" font-size="24" font-weight="700" fill="#25d366">WhatsApp booking  +92 332 621 2431</text>
+  </g>
+
+  <text x="1122" y="596" text-anchor="end" font-family="system-ui, sans-serif" font-size="22" font-weight="700" fill="#f6f8fc">qhqmotors.com</text>
+</svg>
