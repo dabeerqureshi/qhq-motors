@@ -22,13 +22,13 @@ const sora = Sora({
   display: "swap",
 });
 
-const DESCRIPTION = `${SITE.shortDescription} 100% automatic cars, daily / weekly / monthly rates from Rs 5,000, free delivery in Chenab Nagar & Rabwah, and 24/7 meet-and-greet airport transfers.`;
+const DESCRIPTION = `${SITE.shortDescription} 100% automatic self-drive cars, destination & monthly rates from Rs 4,500, free delivery in Chenab Nagar & Rabwah, and 24/7 airport car delivery.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: {
     default:
-      "QHQ Motors | Automatic Car Rental in Chenab Nagar (Rabwah) + Airport Pickup",
+      "QHQ Motors | Automatic Self-Drive Car Rental in Chenab Nagar (Rabwah) + Airport Delivery",
     template: "%s | QHQ Motors Chenab Nagar",
   },
   description: DESCRIPTION,
@@ -37,19 +37,18 @@ export const metadata: Metadata = {
     "car rental Chenab Nagar",
     "rent a car Rabwah",
     "automatic car rental Pakistan",
+    "self drive car rental Rabwah",
     "QHQ Motors",
     "car hire Chenab Nagar",
     "car rental Faisalabad airport",
-    "Lahore airport pickup to Rabwah",
+    "Lahore airport car delivery to Rabwah",
     "Islamabad airport to Chenab Nagar",
-    "self drive car rental Rabwah",
     "rent a car Chiniot",
     "monthly car rental Pakistan",
     "overseas Pakistani car rental",
     "Toyota Corolla Altis rental Pakistan",
     "Suzuki Alto automatic rental",
-    "car with driver Chenab Nagar",
-    "airport transfer Rabwah",
+    "airport car delivery Rabwah",
   ],
   authors: [{ name: SITE.name, url: SITE.url }],
   creator: SITE.name,
@@ -62,12 +61,12 @@ export const metadata: Metadata = {
     url: SITE.url,
     siteName: SITE.name,
     title:
-      "QHQ Motors | Automatic Car Rental in Chenab Nagar (Rabwah) + Airport Pickup",
+      "QHQ Motors | Automatic Self-Drive Car Rental in Chenab Nagar (Rabwah)",
     description: DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "QHQ Motors | Automatic Car Rental in Chenab Nagar (Rabwah)",
+    title: "QHQ Motors | Automatic Self-Drive Car Rental in Chenab Nagar (Rabwah)",
     description: DESCRIPTION,
   },
   robots: {
@@ -95,7 +94,7 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const schemas = allSchemas(CARS);
 
   return (

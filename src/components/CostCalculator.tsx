@@ -7,20 +7,21 @@ import {
   ChevronDown,
   Clock,
   Info,
+  MapPin,
   MessageCircle,
-  Route,
+  Plane,
+  ShieldCheck,
   Sparkles,
-  UserRound,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Reveal, SectionHeading } from "@/components/Reveal";
 import { useFleet } from "@/lib/fleet";
 import { logger } from "@/lib/logger";
+import { CITIES, type CityKey, getCityRate, priceForMonthly, priceForTrip } from "@/lib/pricing";
 import { cn, formatForeign, formatPKR } from "@/lib/utils";
 import { buildBookingMessage, openWhatsApp } from "@/lib/whatsapp";
-import { priceForDays } from "@/lib/pricing";
 
-type PlanKey = "daily" | "weekly" | "monthly";
+type CalcMode = "city" | "monthly";
 
 const fieldClass =
   "w-full appearance-none rounded-xl border border-white/12 bg-ink-950/70 px-10 py-3.5 text-sm font-semibold text-white outline-none transition focus:border-gold-400/70";
@@ -28,67 +29,83 @@ const fieldClass =
 export function CostCalculator() {
   const cars = useFleet();
   const [carId, setCarId] = useState(cars[0]?.id ?? "");
-  const [plan, setPlan] = useState<PlanKey>("weekly");
-  const [units, setUnits] = useState(1);
-  const [extraKm, setExtraKm] = useState(0);
-  const [withDriver, setWithDriver] = useState(false);
+  const [mode, setMode] = useState<CalcMode>("city");
+  const [city, setCity] = useState<CityKey>("fsd");
+  const [days, setDays] = useState(1);
+  const [months, setMonths] = useState(1);
+  const [airportDelivery, setAirportDelivery] = useState(false);
 
   const car = cars.find((c) => c.id === carId) ?? cars[0] ?? null;
 
   const quote = useMemo(() => {
     if (!car) return null;
-    const daysPerUnit = plan === "daily" ? 1 : plan === "weekly" ? 7 : 30;
-    const totalDays = daysPerUnit * units;
-    /* Best price for the whole stay — the per-day rate drops automatically
-       the longer you book (weekly/monthly packages kick in). */
-    const base = priceForDays(car, totalDays);
-    const includedKm = car.rates.freeKmPerDay * totalDays;
-    const extra = extraKm > includedKm ? extraKm - includedKm : 0;
-    const extraCost = extra * car.rates.extraKmRate;
-    const driverFee = withDriver
-      ? (plan === "daily" ? 2500 : 1800) * totalDays
-      : 0;
-    const total = base + extraCost + driverFee;
-    const straightDaily = totalDays * car.rates.daily;
+
+    if (mode === "monthly") {
+      const total = priceForMonthly(car, months);
+      return {
+        mode: "monthly" as const,
+        total,
+        perMonth: car.rates.monthly,
+        months,
+        oilChange: "Client covers routine oil change",
+        summaryText: `${car.name} (${months} month${months > 1 ? "s" : ""})`,
+      };
+    }
+
+    const cityRate = getCityRate(car, city);
+    const total = priceForTrip(car, city, days);
+    const cityName = CITIES.find((c) => c.key === city)?.name ?? "City Trip";
 
     return {
-      base,
-      daysPerUnit,
-      totalDays,
-      includedKm,
-      extra,
-      extraCost,
-      driverFee,
+      mode: "city" as const,
       total,
-      perDay: Math.round(base / totalDays),
-      save: Math.max(0, straightDaily - base),
-      deposit: car.rates.securityDeposit,
+      cityRate: cityRate ?? car.rates.daily,
+      isCustomCity: city === "other",
+      days,
+      city,
+      cityName,
+      summaryText: `${car.name} — ${cityName} (${days} day${days > 1 ? "s" : ""})`,
     };
-  }, [car, plan, units, extraKm, withDriver]);
+  }, [car, mode, city, days, months]);
 
   function send() {
     if (!car || !quote) return;
     logger.success("calculator.send", "Calculator quote sent to WhatsApp", {
       car: car.id,
-      plan,
-      units,
-      extraKm,
+      mode,
+      city,
+      days,
+      months,
       total: quote.total,
     });
+
+    const destinationName =
+      mode === "monthly"
+        ? `Monthly Rental (${months} month${months > 1 ? "s" : ""})`
+        : quote.mode === "city"
+          ? quote.cityName
+          : "City Trip";
+
     openWhatsApp(
       buildBookingMessage({
         car,
-        plan,
-        days: quote.totalDays,
-        withDriver,
+        plan:
+          mode === "monthly"
+            ? `Monthly Rental (${months} Month${months > 1 ? "s" : ""})`
+            : `City Trip — ${destinationName}`,
+        destinationCity: destinationName,
+        days: mode === "city" ? days : undefined,
+        months: mode === "monthly" ? months : undefined,
+        airportDelivery,
+        rate: quote.total,
         notes: [
-          `Rental duration: ${quote.totalDays} days`,
-          `Planned kilometres: ${extraKm} km (free allowance ${quote.includedKm} km)`,
-          `Estimated total: ${formatPKR(quote.total)}`,
-          "Please confirm availability and the final price.",
+          `Self-Drive 100% Automatic`,
+          airportDelivery ? "Airport car delivery requested" : "Local / Doorstep delivery",
+          mode === "monthly" ? "Plus routine oil change" : "Simple transparent rate",
+          "Please confirm car availability for my dates.",
         ].join("\n"),
       }),
-      { car, plan },
+      { car },
       "cost-calculator",
     );
   }
@@ -101,9 +118,9 @@ export function CostCalculator() {
       <div className="container-x">
         <SectionHeading
           eyebrow="Price calculator"
-          title="Know your total"
-          highlight="before you book"
-          description="Slide, tap and see exactly what your rental will cost. The estimate uses our published live rates and automatically applies a lower per-day rate the longer you book — no registration, no email, no spam."
+          title="Instant rate estimate —"
+          highlight="simple & transparent"
+          description="Select your car, choose your destination city or monthly plan, and get an instant quote. 100% self-drive automatic cars with no complicated kilometre calculations or hidden fees."
         />
 
         <Reveal delay={0.1} className="mt-10">
@@ -127,7 +144,7 @@ export function CostCalculator() {
                 >
                   {cars.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.name} {c.variant}
+                      {c.name} {c.variant} (Automatic)
                     </option>
                   ))}
                 </select>
@@ -135,127 +152,151 @@ export function CostCalculator() {
 
               <div>
                 <p className="mb-2 flex items-center gap-2 text-[11px] font-bold tracking-[0.16em] text-slate-400 uppercase">
-                  <Clock size={12} /> Package
+                  <Clock size={12} /> Rental Type
                 </p>
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { k: "daily" as PlanKey, label: "Daily", sub: "24 h" },
-                    { k: "weekly" as PlanKey, label: "Weekly", sub: "7 days" },
-                    { k: "monthly" as PlanKey, label: "Monthly", sub: "30 days" },
-                  ].map((p) => (
-                    <button
-                      key={p.k}
-                      type="button"
-                      onClick={() => {
-                        setPlan(p.k);
-                        setUnits(1);
-                      }}
-                      className={cn(
-                        "rounded-xl border px-3 py-2.5 text-center transition",
-                        plan === p.k
-                          ? "border-gold-400/60 bg-gold-400/15 text-gold-100"
-                          : "border-white/12 text-slate-300 hover:border-white/25",
-                      )}
-                    >
-                      <span className="block text-[13px] font-extrabold">
-                        {p.label}
-                      </span>
-                      <span className="block text-[10.5px] text-slate-500">
-                        {p.sub}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <div className="mb-2 flex items-center justify-between">
-                  <p className="flex items-center gap-2 text-[11px] font-bold tracking-[0.16em] text-slate-400 uppercase">
-                    <Sparkles size={12} /> How many{" "}
-                    {plan === "daily"
-                      ? "days"
-                      : plan === "weekly"
-                        ? "weeks"
-                        : "months"}
-                    ?
-                  </p>
-                  <span className="font-display text-lg font-extrabold text-gold-300">
-                    {units}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={plan === "daily" ? 30 : plan === "weekly" ? 12 : 6}
-                  value={units}
-                  onChange={(e) => setUnits(Number(e.target.value))}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-ink-700 accent-gold-400"
-                  aria-label="Duration"
-                />
-              </div>
-
-              <div>
-                <div className="mb-2 flex items-center justify-between">
-                  <p className="flex items-center gap-2 text-[11px] font-bold tracking-[0.16em] text-slate-400 uppercase">
-                    <Route size={12} /> Planned kilometres
-                  </p>
-                  <span className="font-display text-lg font-extrabold text-gold-300">
-                    {extraKm} km
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={4000}
-                  step={50}
-                  value={extraKm}
-                  onChange={(e) => setExtraKm(Number(e.target.value))}
-                  className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-ink-700 accent-gold-400"
-                  aria-label="Planned kilometres"
-                />
-                {quote && (
-                  <p className="mt-2 text-[11.5px] text-slate-500">
-                    Free allowance for this booking:{" "}
-                    <strong className="text-slate-300">
-                      {quote.includedKm} km
-                    </strong>
-                    {quote.extra > 0 && (
-                      <>
-                        {" · "}
-                        <span className="text-amber-300">
-                          {quote.extra} km chargeable
-                        </span>
-                      </>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setMode("city")}
+                    className={cn(
+                      "rounded-xl border px-4 py-3 text-center transition",
+                      mode === "city"
+                        ? "border-gold-400/60 bg-gold-400/15 text-gold-100"
+                        : "border-white/12 text-slate-300 hover:border-white/25",
                     )}
-                  </p>
-                )}
+                  >
+                    <span className="block text-[13.5px] font-extrabold">
+                      City Trip / Daily
+                    </span>
+                    <span className="block text-[11px] text-slate-400">
+                      Destination-based rates
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setMode("monthly")}
+                    className={cn(
+                      "rounded-xl border px-4 py-3 text-center transition",
+                      mode === "monthly"
+                        ? "border-gold-400/60 bg-gold-400/15 text-gold-100"
+                        : "border-white/12 text-slate-300 hover:border-white/25",
+                    )}
+                  >
+                    <span className="block text-[13.5px] font-extrabold">
+                      Monthly Rental
+                    </span>
+                    <span className="block text-[11px] text-slate-400">
+                      Long stays (+ oil change)
+                    </span>
+                  </button>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2 rounded-xl border border-white/12 bg-ink-900/60 p-1">
-                <button
-                  type="button"
-                  onClick={() => setWithDriver(false)}
-                  className={cn(
-                    "flex-1 rounded-lg px-3 py-2.5 text-[12.5px] font-bold transition",
-                    !withDriver
-                      ? "bg-gold-400 text-ink-950"
-                      : "text-slate-300 hover:text-white",
-                  )}
-                >
-                  Self drive
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setWithDriver(true)}
-                  className={cn(
-                    "flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-[12.5px] font-bold transition",
-                    withDriver
-                      ? "bg-gold-400 text-ink-950"
-                      : "text-slate-300 hover:text-white",
-                  )}
-                >
-                  <UserRound size={13} /> With driver
-                </button>
+              {mode === "city" ? (
+                <>
+                  <div>
+                    <p className="mb-2 flex items-center gap-2 text-[11px] font-bold tracking-[0.16em] text-slate-400 uppercase">
+                      <MapPin size={12} /> Destination City
+                    </p>
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                      {CITIES.map((c) => {
+                        const isSelected = city === c.key;
+                        const rate = car ? getCityRate(car, c.key) : null;
+                        return (
+                          <button
+                            key={c.key}
+                            type="button"
+                            onClick={() => setCity(c.key)}
+                            className={cn(
+                              "rounded-xl border p-3 text-left transition",
+                              isSelected
+                                ? "border-gold-400/70 bg-gold-500/15 text-white"
+                                : "border-white/10 bg-white/5 text-slate-300 hover:border-white/20",
+                            )}
+                          >
+                            <p className="text-[12.5px] font-bold">{c.short}</p>
+                            <p className="mt-0.5 text-[11px] font-extrabold text-gold-300">
+                              {rate ? formatPKR(rate) : "WhatsApp"}
+                            </p>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="mb-2 flex items-center justify-between">
+                      <p className="flex items-center gap-2 text-[11px] font-bold tracking-[0.16em] text-slate-400 uppercase">
+                        <Sparkles size={12} /> Number of days
+                      </p>
+                      <span className="font-display text-lg font-extrabold text-gold-300">
+                        {days} {days === 1 ? "day" : "days"}
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={1}
+                      max={30}
+                      value={days}
+                      onChange={(e) => setDays(Number(e.target.value))}
+                      className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-ink-700 accent-gold-400"
+                      aria-label="Number of days"
+                    />
+                  </div>
+                </>
+              ) : (
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="flex items-center gap-2 text-[11px] font-bold tracking-[0.16em] text-slate-400 uppercase">
+                      <Sparkles size={12} /> Number of months
+                    </p>
+                    <span className="font-display text-lg font-extrabold text-gold-300">
+                      {months} {months === 1 ? "month" : "months"}
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={1}
+                    max={12}
+                    value={months}
+                    onChange={(e) => setMonths(Number(e.target.value))}
+                    className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-ink-700 accent-gold-400"
+                    aria-label="Number of months"
+                  />
+                  <p className="mt-2 text-[11.5px] text-amber-300/90">
+                    * Monthly rental policy: routine oil change is to be maintained by client.
+                  </p>
+                </div>
+              )}
+
+              {/* Airport Delivery Option */}
+              <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/12 bg-ink-900/60 p-3.5 transition hover:border-white/25">
+                <div className="flex items-center gap-3">
+                  <span className="grid size-8 place-items-center rounded-lg bg-gold-400/10 text-gold-400">
+                    <Plane size={15} />
+                  </span>
+                  <div>
+                    <p className="text-[13px] font-bold text-white">
+                      Airport Car Delivery
+                    </p>
+                    <p className="text-[11px] text-slate-400">
+                      We deliver the car to Lahore, Faisalabad or Islamabad airport
+                    </p>
+                  </div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={airportDelivery}
+                  onChange={(e) => setAirportDelivery(e.target.checked)}
+                  className="size-4.5 accent-gold-400"
+                />
+              </label>
+
+              {/* Self-drive only indicator */}
+              <div className="flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5 text-[12px] font-bold text-emerald-300">
+                <ShieldCheck size={16} className="shrink-0 text-emerald-400" />
+                <span>100% Self-Drive Rental (No driver hassle)</span>
               </div>
             </div>
 
@@ -265,7 +306,7 @@ export function CostCalculator() {
               className="flex flex-col rounded-3xl border border-gold-500/25 bg-gradient-to-b from-gold-500/12 to-ink-950/40 p-6"
             >
               <p className="flex items-center gap-2 text-[11px] font-bold tracking-[0.18em] text-gold-300 uppercase">
-                <Calculator size={13} /> Estimated total
+                <Calculator size={13} /> Estimated Total
               </p>
               <p className="mt-3 font-display text-4xl font-extrabold text-white">
                 {quote ? formatPKR(quote.total) : "—"}
@@ -276,56 +317,89 @@ export function CostCalculator() {
                 {quote ? formatForeign(quote.total, "AED") : "—"}
               </p>
 
-              {quote && quote.save > 0 && (
-                <p className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-[#25d366]/12 px-3 py-1.5 text-[11.5px] font-bold text-[#4ade80]">
+              {mode === "monthly" && (
+                <p className="mt-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-gold-400/15 px-3 py-1.5 text-[11.5px] font-bold text-gold-200">
                   <Sparkles size={12} />
-                  You save {formatPKR(quote.save)} — per-day rate drops on
-                  longer bookings
+                  {car?.rates.monthlyNote || "Plus oil change"}
                 </p>
               )}
 
               <dl className="mt-5 space-y-2.5 text-[12.5px]">
-                {quote &&
-                  [
-                    {
-                      k: `Vehicle rent (${quote.totalDays} days)`,
-                      v: formatPKR(quote.base),
-                    },
-                    { k: "Free kilometres", v: `${quote.includedKm} km` },
-                    ...(quote.extraCost > 0
-                      ? [
-                          {
-                            k: `Extra km (${quote.extra} km)`,
-                            v: formatPKR(quote.extraCost),
-                          },
-                        ]
-                      : []),
-                    ...(quote.driverFee > 0
-                      ? [
-                          {
-                            k: "Driver allowance",
-                            v: formatPKR(quote.driverFee),
-                          },
-                        ]
-                      : []),
-                    { k: "Average per day", v: formatPKR(quote.perDay) },
-                    { k: "Refundable deposit", v: formatPKR(quote.deposit) },
-                  ].map((row) => (
-                    <div
-                      key={row.k}
-                      className="flex items-center justify-between gap-3 border-b border-white/8 pb-2 last:border-0"
-                    >
-                      <dt className="text-slate-400">{row.k}</dt>
-                      <dd className="font-bold text-slate-100">{row.v}</dd>
+                {quote && (
+                  <>
+                    <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-2">
+                      <dt className="text-slate-400">Vehicle</dt>
+                      <dd className="font-bold text-slate-100">
+                        {car?.name} ({car?.variant})
+                      </dd>
                     </div>
-                  ))}
+
+                    <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-2">
+                      <dt className="text-slate-400">Drive Type</dt>
+                      <dd className="font-bold text-emerald-400">
+                        Self Drive (Automatic)
+                      </dd>
+                    </div>
+
+                    {quote.mode === "city" ? (
+                      <>
+                        <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-2">
+                          <dt className="text-slate-400">Destination</dt>
+                          <dd className="font-bold text-slate-100">
+                            {quote.cityName}
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-2">
+                          <dt className="text-slate-400">Duration</dt>
+                          <dd className="font-bold text-slate-100">
+                            {quote.days} {quote.days === 1 ? "day" : "days"}
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-2">
+                          <dt className="text-slate-400">Rate per day / trip</dt>
+                          <dd className="font-bold text-gold-300">
+                            {formatPKR(quote.cityRate)}
+                          </dd>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-2">
+                          <dt className="text-slate-400">Plan</dt>
+                          <dd className="font-bold text-slate-100">
+                            Monthly Rental ({quote.months} mo)
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-2">
+                          <dt className="text-slate-400">Monthly Rate</dt>
+                          <dd className="font-bold text-gold-300">
+                            {formatPKR(quote.perMonth)} / month
+                          </dd>
+                        </div>
+                        <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-2">
+                          <dt className="text-slate-400">Maintenance</dt>
+                          <dd className="font-bold text-amber-300">
+                            Plus oil change
+                          </dd>
+                        </div>
+                      </>
+                    )}
+
+                    {airportDelivery && (
+                      <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-2">
+                        <dt className="text-slate-400">Airport Handover</dt>
+                        <dd className="font-bold text-sky-400">
+                          Car delivered to Airport
+                        </dd>
+                      </div>
+                    )}
+                  </>
+                )}
               </dl>
 
-              <p className="mt-5 flex items-start gap-2 text-[11px] leading-relaxed text-slate-500">
+              <p className="mt-5 flex items-start gap-2 text-[11px] leading-relaxed text-slate-400">
                 <Info size={13} className="mt-0.5 shrink-0 text-gold-500" />
-                Estimate only. Fuel, motorway tolls and driver meals are not
-                included. Send it to us on WhatsApp and we will confirm the
-                exact total for your dates.
+                Simple pricing. Fuel and motorway tolls are paid by the guest. Free delivery in Chenab Nagar & Rabwah. Send to WhatsApp to confirm your booking dates.
               </p>
 
               <button

@@ -6,8 +6,11 @@ import {
   Fuel,
   Gauge,
   Info,
+  MapPin,
   MessageCircle,
+  Plane,
   Settings2,
+  ShieldCheck,
   Users,
 } from "lucide-react";
 import Image from "next/image";
@@ -17,44 +20,26 @@ import { formatForeign, formatPKR } from "@/lib/utils";
 import { buildBookingMessage, openWhatsApp } from "@/lib/whatsapp";
 import { Badge, Stars } from "@/components/ui";
 
-export type RateMode = "daily" | "weekly" | "monthly";
-
-export function rateFor(car: Car, mode: RateMode) {
-  return mode === "daily"
-    ? car.rates.daily
-    : mode === "weekly"
-      ? car.rates.weekly
-      : car.rates.monthly;
-}
-
-const MODE_LABEL: Record<RateMode, string> = {
-  daily: "per day",
-  weekly: "per week",
-  monthly: "per month",
-};
-
-/** A single fleet card with specs, rates and a WhatsApp CTA. */
 export function CarCard({
   car,
-  mode,
   index = 0,
   onDetails,
 }: {
   car: Car;
-  mode: RateMode;
   index?: number;
   onDetails: (car: Car) => void;
 }) {
-  const price = rateFor(car, mode);
-
   function book() {
     logger.success("booking.card", `Book flow started for ${car.name}`, {
       car: car.id,
-      mode,
     });
     openWhatsApp(
-      buildBookingMessage({ car, plan: mode }),
-      { car, plan: mode },
+      buildBookingMessage({
+        car,
+        plan: "Self-Drive Booking",
+        notes: `I would like to book the ${car.name} (${car.variant}). Please confirm availability.`,
+      }),
+      { car },
       `fleet-card-${car.id}`,
     );
   }
@@ -86,7 +71,10 @@ export function CarCard({
               )}
             </Badge>
             <Badge tone="gold">
-              <Settings2 size={11} /> {car.transmission}
+              <ShieldCheck size={11} /> Self-Drive
+            </Badge>
+            <Badge tone="slate">
+              <Settings2 size={11} /> Automatic
             </Badge>
           </div>
           <div className="text-right">
@@ -104,7 +92,7 @@ export function CarCard({
         >
           <Image
             src={car.image}
-            alt={`${car.name} ${car.variant} rental car in Chenab Nagar (Rabwah)`}
+            alt={`${car.name} ${car.variant} self-drive car rental in Chenab Nagar (Rabwah)`}
             width={900}
             height={420}
             loading={index < 2 ? "eager" : "lazy"}
@@ -151,37 +139,54 @@ export function CarCard({
           ))}
         </dl>
 
-        {/* best for */}
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {car.bestFor.slice(0, 4).map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10.5px] font-semibold text-slate-300"
-            >
-              {tag}
-            </span>
-          ))}
+        {/* city rates summary table inside card */}
+        <div className="mt-4 rounded-2xl border border-white/10 bg-ink-950/60 p-3">
+          <p className="flex items-center gap-1.5 text-[10.5px] font-bold tracking-[0.14em] text-slate-400 uppercase">
+            <MapPin size={11} className="text-gold-400" /> City / Trip Rates
+          </p>
+          <div className="mt-2 grid grid-cols-2 gap-2 text-[11.5px]">
+            <div className="flex justify-between border-b border-white/6 pb-1">
+              <span className="text-slate-400">Faisalabad:</span>
+              <span className="font-bold text-white">{formatPKR(car.rates.cities.fsd)}</span>
+            </div>
+            <div className="flex justify-between border-b border-white/6 pb-1">
+              <span className="text-slate-400">Sargodha:</span>
+              <span className="font-bold text-white">{formatPKR(car.rates.cities.srg)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-400">Lahore:</span>
+              <span className="font-bold text-white">{formatPKR(car.rates.cities.lhr)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-400">Islamabad:</span>
+              <span className="font-bold text-white">{formatPKR(car.rates.cities.isl)}</span>
+            </div>
+          </div>
         </div>
 
         {/* price */}
-        <div className="mt-auto pt-6">
+        <div className="mt-auto pt-5">
           <div className="flex items-end justify-between gap-3 rounded-2xl border border-gold-500/25 bg-gold-500/10 px-4 py-3.5">
             <div>
-              <p className="text-[10.5px] font-bold tracking-[0.16em] text-gold-300 uppercase">
-                {mode} rate
+              <p className="text-[10px] font-bold tracking-[0.16em] text-gold-300 uppercase">
+                Monthly Package
               </p>
-              <p className="font-display text-2xl font-extrabold text-white">
-                {formatPKR(price)}
+              <p className="font-display text-xl font-extrabold text-white">
+                {formatPKR(car.rates.monthly)}
+                <span className="text-[11px] font-normal text-slate-400"> / mo</span>
               </p>
-              <p className="text-[11px] text-slate-400">
-                {MODE_LABEL[mode]} · ≈ {formatForeign(price, "USD")}
+              <p className="text-[11px] text-amber-300">
+                + routine oil change
               </p>
             </div>
-            <p className="text-right text-[11px] leading-snug text-slate-400">
-              {car.rates.freeKmPerDay} free km/day
-              <br />
-              {formatPKR(car.rates.extraKmRate)} per extra km
-            </p>
+            <div className="text-right">
+              <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                Airport Delivery
+              </p>
+              <p className="mt-0.5 flex items-center justify-end gap-1 text-[11.5px] font-bold text-emerald-400">
+                <Plane size={12} /> Available
+              </p>
+            </div>
           </div>
 
           <div className="mt-4 flex gap-2.5">

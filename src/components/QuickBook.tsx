@@ -8,8 +8,8 @@ import {
   MapPin,
   MessageCircle,
   Plane,
+  ShieldCheck,
   Sparkles,
-  UserRound,
 } from "lucide-react";
 import { useState } from "react";
 import type { Car as CarType } from "@/data/cars";
@@ -18,37 +18,50 @@ import { logger } from "@/lib/logger";
 import { formatPKR } from "@/lib/utils";
 import { buildBookingMessage, openWhatsApp } from "@/lib/whatsapp";
 
-export type PlanKey = "daily" | "weekly" | "monthly";
+export type QuickPlanKey = "fsd" | "srg" | "lhr" | "isl" | "monthly" | "other";
 
-const PLAN_OPTIONS: { key: PlanKey; label: string; badge?: string }[] = [
-  { key: "daily", label: "Daily (24 hours)" },
-  { key: "weekly", label: "Weekly (7 days)", badge: "Save 15%" },
-  { key: "monthly", label: "Monthly (30 days)", badge: "Save 33%" },
+const PLAN_OPTIONS: { key: QuickPlanKey; label: string; badge?: string }[] = [
+  { key: "fsd", label: "Faisalabad Trip" },
+  { key: "srg", label: "Sargodha Trip" },
+  { key: "lhr", label: "Lahore Trip" },
+  { key: "isl", label: "Islamabad Trip" },
+  { key: "monthly", label: "Monthly Rental", badge: "+ oil change" },
+  { key: "other", label: "Other Cities (Custom rate)" },
 ];
 
 const fieldClass =
   "w-full appearance-none rounded-xl border border-white/12 bg-ink-900/80 px-10 py-3.5 text-sm font-semibold text-white outline-none transition focus:border-gold-400/70 focus:bg-ink-900 focus:ring-2 focus:ring-gold-400/20";
 
-/** Compact quick-booking bar shown in the hero. Sends everything to WhatsApp. */
 export function QuickBook({
   cars,
-  defaultPlan = "daily",
   compact = false,
 }: {
   cars: CarType[];
-  defaultPlan?: PlanKey;
   compact?: boolean;
 }) {
   const [carId, setCarId] = useState(cars[0]?.id ?? "");
-  const [plan, setPlan] = useState<PlanKey>(defaultPlan);
+  const [plan, setPlan] = useState<QuickPlanKey>("fsd");
   const [pickup, setPickup] = useState<string>(SITE.pickupPoints[0].label);
   const [pickupDate, setPickupDate] = useState("");
   const [advanced, setAdvanced] = useState(false);
   const [returnDate, setReturnDate] = useState("");
-  const [withDriver, setWithDriver] = useState(false);
   const [name, setName] = useState("");
 
   const car = cars.find((c) => c.id === carId) ?? cars[0] ?? null;
+
+  const currentRate = car
+    ? plan === "monthly"
+      ? car.rates.monthly
+      : plan === "fsd"
+        ? car.rates.cities.fsd
+        : plan === "srg"
+          ? car.rates.cities.srg
+          : plan === "lhr"
+            ? car.rates.cities.lhr
+            : plan === "isl"
+              ? car.rates.cities.isl
+              : car.rates.daily
+    : 5000;
 
   function submit() {
     if (!pickupDate) {
@@ -57,16 +70,27 @@ export function QuickBook({
         "Booking attempted without a pickup date",
       );
     }
+
+    const planLabel = PLAN_OPTIONS.find((p) => p.key === plan)?.label ?? plan;
+    const isAirport = pickup.toLowerCase().includes("airport");
+
     const message = buildBookingMessage({
       car,
-      plan,
+      plan: planLabel,
+      destinationCity: planLabel,
       pickup,
       pickupDate,
       returnDate: returnDate || undefined,
-      withDriver,
       name: name || undefined,
+      airportDelivery: isAirport,
+      rate: plan === "other" ? undefined : currentRate,
+      notes: [
+        `Self-Drive 100% Automatic`,
+        plan === "monthly" ? "Plus routine oil change" : "Simple transparent rate",
+      ].join("\n"),
     });
-    openWhatsApp(message, { car, plan, pickup }, "hero-quick-book");
+
+    openWhatsApp(message, { car, pickup }, "hero-quick-book");
     logger.success("booking.submit", "Quick booking sent to WhatsApp", {
       car: car?.name,
       plan,
@@ -84,17 +108,21 @@ export function QuickBook({
     >
       <div className="mb-4 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-[11px] font-bold tracking-[0.18em] text-gold-300 uppercase">
-          <Sparkles size={13} /> Instant booking — no forms, no waiting
+          <Sparkles size={13} /> Instant self-drive booking
         </div>
-        <button
-          type="button"
-          onClick={() => setAdvanced((v) => !v)}
-          className="text-[11px] font-bold text-slate-400 underline decoration-dotted transition hover:text-gold-300"
-        >
-          {advanced ? "Hide options" : "More options"}
-        </button>
+        <div className="flex items-center gap-2">
+          <span className="hidden items-center gap-1 text-[11px] font-bold text-emerald-400 sm:flex">
+            <ShieldCheck size={13} /> 100% Self-Drive Only
+          </span>
+          <button
+            type="button"
+            onClick={() => setAdvanced((v) => !v)}
+            className="text-[11px] font-bold text-slate-400 underline decoration-dotted transition hover:text-gold-300"
+          >
+            {advanced ? "Hide options" : "More options"}
+          </button>
+        </div>
       </div>
-
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <label className="relative block">
@@ -124,7 +152,7 @@ export function QuickBook({
         </label>
 
         <label className="relative block">
-          <Calendar
+          <MapPin
             size={15}
             className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-gold-400"
           />
@@ -135,17 +163,17 @@ export function QuickBook({
           <select
             value={plan}
             onChange={(e) => {
-              const value = e.target.value as PlanKey;
+              const value = e.target.value as QuickPlanKey;
               setPlan(value);
               logger.info("filter.plan", `Plan selected: ${value}`);
             }}
             className={fieldClass}
-            aria-label="Choose a rental plan"
+            aria-label="Choose destination or monthly plan"
           >
             {PLAN_OPTIONS.map((p) => (
               <option key={p.key} value={p.key}>
                 {p.label}
-                {p.badge ? ` — ${p.badge}` : ""}
+                {p.badge ? ` (${p.badge})` : ""}
               </option>
             ))}
           </select>
@@ -178,7 +206,7 @@ export function QuickBook({
         </label>
 
         <label className="relative block">
-          <MapPin
+          <Calendar
             size={15}
             className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-gold-400"
           />
@@ -193,12 +221,11 @@ export function QuickBook({
         </label>
       </div>
 
-
       {advanced && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
-          className="mt-3 grid gap-3 overflow-hidden md:grid-cols-3"
+          className="mt-3 grid gap-3 overflow-hidden md:grid-cols-2"
         >
           <label className="relative block">
             <Calendar
@@ -215,10 +242,6 @@ export function QuickBook({
             />
           </label>
           <label className="relative block">
-            <UserRound
-              size={15}
-              className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-gold-400"
-            />
             <input
               type="text"
               value={name}
@@ -228,32 +251,6 @@ export function QuickBook({
               aria-label="Your name"
             />
           </label>
-          <div className="flex items-center gap-1 rounded-xl border border-white/12 bg-ink-900/60 p-1">
-            <button
-              type="button"
-              onClick={() => setWithDriver(false)}
-              className={
-                "flex-1 rounded-lg px-3 py-2.5 text-[12px] font-bold transition " +
-                (!withDriver
-                  ? "bg-gold-400 text-ink-950"
-                  : "text-slate-300 hover:text-white")
-              }
-            >
-              Self drive
-            </button>
-            <button
-              type="button"
-              onClick={() => setWithDriver(true)}
-              className={
-                "flex-1 rounded-lg px-3 py-2.5 text-[12px] font-bold transition " +
-                (withDriver
-                  ? "bg-gold-400 text-ink-950"
-                  : "text-slate-300 hover:text-white")
-              }
-            >
-              With driver
-            </button>
-          </div>
         </motion.div>
       )}
 
@@ -266,17 +263,13 @@ export function QuickBook({
               </span>{" "}
               ·{" "}
               <span className="font-bold text-gold-300">
-                {formatPKR(
-                  plan === "daily"
-                    ? car.rates.daily
-                    : plan === "weekly"
-                      ? car.rates.weekly
-                      : car.rates.monthly,
-                )}
+                {plan === "other"
+                  ? "Contact for rate"
+                  : plan === "monthly"
+                    ? `${formatPKR(currentRate)}/month (+ oil change)`
+                    : `${formatPKR(currentRate)} / trip`}
               </span>{" "}
-              per{" "}
-              {plan === "daily" ? "day" : plan === "weekly" ? "week" : "month"}{" "}
-              · {car.rates.freeKmPerDay} free km/day
+              · 100% Self-Drive
             </>
           ) : (
             "Fleet details coming soon."
@@ -293,8 +286,7 @@ export function QuickBook({
 
       {!compact && (
         <p className="mt-3 text-center text-[11px] text-slate-500">
-          Opens WhatsApp with your details pre-filled · Reply usually within 5
-          minutes · {SITE.phone.display}
+          Opens WhatsApp with your booking details pre-filled · Fast reply · {SITE.phone.display}
         </p>
       )}
     </motion.div>

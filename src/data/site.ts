@@ -6,9 +6,9 @@
 export const SITE = {
   name: "QHQ Motors",
   legalName: "QHQ Motors Car Rental",
-  tagline: "Automatic Car Rental in Chenab Nagar (Rabwah), Pakistan",
+  tagline: "Automatic Self-Drive Car Rental in Chenab Nagar (Rabwah), Pakistan",
   shortDescription:
-    "QHQ Motors rents clean, fully automatic cars in Chenab Nagar (Rabwah) with free airport pickup from Lahore, Faisalabad and Islamabad.",
+    "QHQ Motors provides clean, fully automatic self-drive cars in Chenab Nagar (Rabwah) with car delivery to Lahore, Faisalabad and Islamabad airports.",
 
   /** Live production domain — used for canonical URLs, sitemap & Open Graph. */
   url: "https://qhqmotors.com",
@@ -83,63 +83,63 @@ export const SITE = {
     "Sangla Hill",
   ],
 
-  /** Airports + stations we offer pickup and drop-off at. */
+  /** Airports + stations we offer car delivery and handover at. */
   pickupPoints: [
     {
       id: "chenab-nagar",
       label: "Chenab Nagar / Rabwah (Free Delivery)",
       short: "Chenab Nagar",
       code: "CN",
-      note: "Free doorstep delivery anywhere inside Chenab Nagar & Rabwah.",
+      note: "Free doorstep car delivery anywhere inside Chenab Nagar & Rabwah.",
     },
     {
       id: "lhe",
       label: "Lahore — Allama Iqbal International Airport (LHE)",
       short: "Lahore Airport (LHE)",
       code: "LHE",
-      note: "Driver meets you at arrivals with a name board. ~2h 40m to Rabwah.",
+      note: "Car delivered to Lahore airport for seamless self-drive handover.",
     },
     {
       id: "lyp",
       label: "Faisalabad International Airport (LYP)",
       short: "Faisalabad Airport (LYP)",
       code: "LYP",
-      note: "Our closest international airport — about 1h 30m to Rabwah.",
+      note: "Our closest international airport — car delivered to terminal on arrival.",
     },
     {
       id: "isb",
       label: "Islamabad International Airport (ISB)",
       short: "Islamabad Airport (ISB)",
       code: "ISB",
-      note: "Long-distance transfer with a professional chauffeur.",
-    },
-    {
-      id: "skt",
-      label: "Sialkot International Airport (SKT)",
-      short: "Sialkot Airport (SKT)",
-      code: "SKT",
-      note: "Popular with UK & Europe arrivals.",
+      note: "Car delivered directly to Islamabad Airport for self-drive travel.",
     },
     {
       id: "fsd-city",
       label: "Faisalabad City / Daewoo Terminal",
       short: "Faisalabad City",
       code: "FSD",
-      note: "Bus stand and city-wide pickups available.",
+      note: "City-wide & bus terminal handover available.",
+    },
+    {
+      id: "srg-city",
+      label: "Sargodha City / PAF Road",
+      short: "Sargodha City",
+      code: "SRG",
+      note: "Direct delivery across Sargodha city.",
     },
     {
       id: "lhr-city",
       label: "Lahore City / Thokar Niaz Baig",
       short: "Lahore City",
       code: "LHR",
-      note: "Anywhere in Lahore, 24 hours a day.",
+      note: "Doorstep delivery across Lahore city.",
     },
     {
       id: "isb-city",
       label: "Islamabad / Rawalpindi City",
       short: "Islamabad City",
       code: "RWP",
-      note: "Airport, hotel or residence pickup.",
+      note: "Hotel or residence car delivery.",
     },
   ],
 

@@ -1,127 +1,99 @@
-export interface RentalPlan {
-  id: "daily" | "weekly" | "monthly";
-  name: string;
-  tagline: string;
-  /** Number of days the package covers. */
-  days: number;
-  /** Smallest "from" price across the fleet, in PKR. */
-  from: number;
-  /** Highest "from" price (largest car), in PKR. */
-  to: number;
-  /** Percentage saved vs. paying the daily rate. */
-  save: string;
-  freeKm: string;
-  perks: string[];
-  popular?: boolean;
+export interface CityDestinationRate {
+  id: "fsd" | "srg" | "lhr" | "isl" | "other";
+  city: string;
+  code: string;
+  distance: string;
+  altoRate: number;
+  altisRate: number;
+  note: string;
 }
 
-/**
- * Rental packages. The `from` prices are the cheapest car in the fleet, so
- * they always stay honest even when the fleet changes.
- */
-export const PLANS: RentalPlan[] = [
+export const CITY_RATES: CityDestinationRate[] = [
   {
-    id: "daily",
-    name: "Daily Rental",
-    tagline: "Perfect for a single day of errands, meetings or a short visit.",
-    days: 1,
-    from: 5000,
-    to: 6000,
-    save: "Pay as you go",
-    freeKm: "100–120 km free per day",
-    perks: [
-      "24-hour rental period",
-      "100–120 free km included",
-      "Free delivery in Chenab Nagar & Rabwah",
-      "Unlimited pickup points",
-      "Full tank policy — return full",
-    ],
+    id: "fsd",
+    city: "Faisalabad",
+    code: "FSD / LYP",
+    distance: "≈ 72 km · 1h 30m",
+    altoRate: 4500,
+    altisRate: 5000,
+    note: "City trips, Daewoo terminal and Faisalabad Airport (LYP) car delivery.",
   },
   {
-    id: "weekly",
-    name: "Weekly Rental",
-    tagline: "The sweet spot for a one-week family visit to Rabwah.",
-    days: 7,
-    from: 30000,
-    to: 36000,
-    save: "Save up to 15%",
-    freeKm: "700–840 km free across the week",
-    popular: true,
-    perks: [
-      "7 days for the price of 6",
-      "Extended free kilometre bundle",
-      "Free first car wash",
-      "Priority for the newest car in the fleet",
-      "Swap cars mid-rental at no cost",
-    ],
+    id: "srg",
+    city: "Sargodha",
+    code: "SRG",
+    distance: "≈ 50 km · 1h 00m",
+    altoRate: 4500,
+    altisRate: 5000,
+    note: "Quick connection to Sargodha city, PAF base, hospitals and markets.",
   },
   {
-    id: "monthly",
-    name: "Monthly Rental",
-    tagline: "Ideal for long stays, medical leave, work trips and house-hunting.",
-    days: 30,
-    from: 100000,
-    to: 120000,
-    save: "Save up to 33%",
-    freeKm: "3,000–3,600 km free per month",
-    popular: false,
-    perks: [
-      "Lowest per-day cost in the fleet",
-      "Two free scheduled services",
-      "Free replacement car during service",
-      "Monthly billing & receipt for records",
-      "Flexible extensions at the same rate",
-    ],
+    id: "lhr",
+    city: "Lahore",
+    code: "LHR / LHE",
+    distance: "≈ 168 km · 2h 40m",
+    altoRate: 5000,
+    altisRate: 5500,
+    note: "Motorway M-2 route, Lahore city & Allama Iqbal Airport (LHE) car delivery.",
+  },
+  {
+    id: "isl",
+    city: "Islamabad",
+    code: "ISB",
+    distance: "≈ 320 km · 4h 30m",
+    altoRate: 5500,
+    altisRate: 6000,
+    note: "Twin Cities & Islamabad International Airport (ISB) car delivery.",
   },
 ];
 
-export interface AirportTransfer {
+export interface AirportDelivery {
   code: string;
   name: string;
   distance: string;
   duration: string;
-  sedanPrice: number;
+  altisPrice: number;
   altoPrice: number;
   note: string;
 }
 
-/** Long-distance airport transfer pricing (one way, meet & greet included). */
-export const AIRPORT_TRANSFERS: AirportTransfer[] = [
+/** Airport car delivery pricing for self-drive handover on arrival */
+export const AIRPORT_TRANSFERS: AirportDelivery[] = [
   {
     code: "LYP",
     name: "Faisalabad International Airport",
     distance: "≈ 72 km",
     duration: "1h 30m",
-    sedanPrice: 11000,
-    altoPrice: 8500,
-    note: "Our closest international airport — the most popular route for guests from the Gulf.",
+    altisPrice: 5000,
+    altoPrice: 4500,
+    note: "Our closest international airport — we deliver your self-drive car straight to arrivals.",
   },
   {
     code: "LHE",
     name: "Lahore — Allama Iqbal Int'l Airport",
     distance: "≈ 168 km",
     duration: "2h 40m",
-    sedanPrice: 18000,
-    altoPrice: 14000,
-    note: "Motorway M-2 all the way. Driver meets you at arrivals with a name board.",
+    altisPrice: 5500,
+    altoPrice: 5000,
+    note: "Motorway M-2 direct route. Car delivered to the terminal ready for you to drive.",
   },
   {
     code: "ISB",
     name: "Islamabad International Airport",
     distance: "≈ 320 km",
     duration: "4h 30m",
-    sedanPrice: 32000,
-    altoPrice: 25000,
-    note: "Long-distance chauffeur transfer with a rest stop on request.",
+    altisPrice: 6000,
+    altoPrice: 5500,
+    note: "Car delivered to Islamabad Airport for effortless self-drive travel back to Rabwah.",
   },
   {
-    code: "SKT",
-    name: "Sialkot International Airport",
-    distance: "≈ 275 km",
-    duration: "4h 10m",
-    sedanPrice: 30000,
-    altoPrice: 24000,
-    note: "Favourite with guests flying in from the United Kingdom and Europe.",
+    code: "OTHER",
+    name: "Other Airports & Cities",
+    distance: "Custom distance",
+    duration: "Flexible",
+    altisPrice: 5000,
+    altoPrice: 4500,
+    note: "We deliver to other cities across Punjab — contact us on WhatsApp for a custom rate.",
   },
 ];
 
@@ -134,13 +106,13 @@ export interface Testimonial {
   rating: number;
 }
 
-/** Realistic guest reviews (edit freely — they are static content). */
+/** Guest reviews (100% self-drive focused) */
 export const TESTIMONIALS: Testimonial[] = [
   {
     name: "Bilal Ahmad",
     location: "Manchester, UK",
     flag: "🇬🇧",
-    text: "Booked the Corolla Altis automatic from the UK before my flight. The driver was waiting at Lahore airport with my name on a board and the car was spotless. Zero hassle — exactly what you want after a long flight.",
+    text: "Booked the Corolla Altis automatic from the UK before my flight. The car was delivered right outside Lahore airport spotless and ready to drive. Zero hassle — exactly what you want after a long flight.",
     car: "Toyota Corolla Altis",
     rating: 5,
   },
@@ -148,7 +120,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Ayesha Siddiqui",
     location: "Toronto, Canada",
     flag: "🇨🇦",
-    text: "We rented the Alto for a month while visiting family in Rabwah. Super economical, easy to park near the bazaar and the monthly rate was very reasonable. Dabeer bhai was always one WhatsApp message away.",
+    text: "We rented the Alto for a month while visiting family in Rabwah. Super economical, easy to park near the bazaar and the monthly rate (Rs 105,000 + oil change) was very reasonable. Dabeer bhai was always one WhatsApp message away.",
     car: "Suzuki Alto VXL",
     rating: 5,
   },
@@ -156,7 +128,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Hafiz Usman",
     location: "Dubai, UAE",
     flag: "🇦🇪",
-    text: "Airport pickup at Faisalabad, car delivered the same evening and returned at the airport on my last day. Clean automatic car and a very fair price. Highly recommended for overseas guests.",
+    text: "Car was delivered to Faisalabad airport on my landing evening, perfect self-drive automatic and handed back smoothly at the airport on my last day. Very honest and transparent pricing.",
     car: "Toyota Corolla Altis",
     rating: 5,
   },
@@ -164,7 +136,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Dr. Sana Malik",
     location: "Karachi, Pakistan",
     flag: "🇵🇰",
-    text: "Needed a reliable automatic for hospital visits in Faisalabad. QHQ gave us a car the same day with a very reasonable weekly rate. The AC was excellent in July heat.",
+    text: "Needed a reliable automatic for medical visits in Faisalabad. QHQ gave us the Alto with simple per-trip pricing. The AC was ice cold and driving was super comfortable.",
     car: "Suzuki Alto VXL",
     rating: 5,
   },
@@ -172,7 +144,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Imran Qureshi",
     location: "Jeddah, KSA",
     flag: "🇸🇦",
-    text: "Used QHQ Motors for our whole wedding week. Both cars were automatic, spotless and the driver was extremely polite with our guests. Rates were honest with no hidden charges at all.",
+    text: "Used QHQ Motors for our whole wedding stay. Both cars were automatic, spotless and in immaculate mechanical condition. Clear upfront rates with no hidden extras.",
     car: "Toyota Corolla Altis",
     rating: 5,
   },
@@ -180,7 +152,7 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Sarah Thompson",
     location: "Birmingham, UK",
     flag: "🇬🇧",
-    text: "As an international visitor I was nervous about hiring a car in Pakistan. QHQ Motors handled everything on WhatsApp and even explained the roads to Rabwah. Felt completely safe and looked after.",
+    text: "First time hiring a car in Pakistan. QHQ Motors arranged everything on WhatsApp and delivered the car to the airport smoothly. Self-driving was easy with the automatic gearbox.",
     car: "Toyota Corolla Altis",
     rating: 5,
   },

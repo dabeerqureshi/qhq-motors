@@ -1,31 +1,65 @@
-import type { Car } from "@/data/cars";
+import type { Car, CityRates } from "@/data/cars";
 
-/**
- * Best total price for renting `car` for `days` days.
- *
- * Longer bookings automatically cost less per day: the quote uses the
- * cheapest combination of monthly (30-day), weekly (7-day) and daily
- * packages that covers the whole rental period. Prices come straight from
- * `car.rates`, so the discount is always consistent with the published
- * package rates.
- */
-export function priceForDays(car: Car, days: number): number {
-  const total = Math.max(1, Math.ceil(days));
-  const { daily, weekly, monthly } = car.rates;
+export type CityKey = "fsd" | "srg" | "lhr" | "isl" | "other";
 
-  // Plain daily rate for every day — the baseline to beat.
-  let best = total * daily;
+export interface DestinationCity {
+  key: CityKey;
+  name: string;
+  short: string;
+  tag: string;
+  distance: string;
+}
 
-  // Try every number of full months and fill the rest with the cheapest
-  // mix of weeks and single days (weekly is always cheaper than 7 dailies).
-  const maxMonths = Math.floor(total / 30);
-  for (let months = 0; months <= maxMonths; months += 1) {
-    const rest = total - months * 30;
-    const weeks = Math.floor(rest / 7);
-    const cost =
-      months * monthly + weeks * weekly + (rest - weeks * 7) * daily;
-    if (cost < best) best = cost;
-  }
+export const CITIES: DestinationCity[] = [
+  {
+    key: "fsd",
+    name: "Faisalabad (FSD)",
+    short: "Faisalabad",
+    tag: "LYP Airport & City",
+    distance: "≈ 72 km",
+  },
+  {
+    key: "srg",
+    name: "Sargodha (SRG)",
+    short: "Sargodha",
+    tag: "City & Suburbs",
+    distance: "≈ 50 km",
+  },
+  {
+    key: "lhr",
+    name: "Lahore (LHR)",
+    short: "Lahore",
+    tag: "LHE Airport & Motorway M-2",
+    distance: "≈ 168 km",
+  },
+  {
+    key: "isl",
+    name: "Islamabad (ISB)",
+    short: "Islamabad",
+    tag: "ISB Airport & Twin Cities",
+    distance: "≈ 320 km",
+  },
+  {
+    key: "other",
+    name: "Other Cities",
+    short: "Other Cities",
+    tag: "Contact on WhatsApp for rate",
+    distance: "Custom route",
+  },
+];
 
-  return best;
+export function getCityRate(car: Car, city: CityKey): number | null {
+  if (city === "other") return null;
+  return car.rates.cities[city as keyof CityRates] ?? car.rates.daily;
+}
+
+/** Total price for city trip / day rental */
+export function priceForTrip(car: Car, city: CityKey, days = 1): number {
+  const rate = getCityRate(car, city) ?? car.rates.daily;
+  return rate * Math.max(1, days);
+}
+
+/** Total price for monthly rental */
+export function priceForMonthly(car: Car, months = 1): number {
+  return car.rates.monthly * Math.max(1, months);
 }

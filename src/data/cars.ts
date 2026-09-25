@@ -9,19 +9,26 @@ export type Transmission = "Automatic";
 export type CarCategory = "Sedan" | "Hatchback" | "SUV" | "Van" | "Luxury";
 export type FuelType = "Petrol" | "Diesel" | "Hybrid" | "Electric" | "Petrol / CNG";
 
+export interface CityRates {
+  /** Faisalabad rate (PKR) */
+  fsd: number;
+  /** Sargodha rate (PKR) */
+  srg: number;
+  /** Lahore rate (PKR) */
+  lhr: number;
+  /** Islamabad rate (PKR) */
+  isl: number;
+}
+
 export interface RentalRates {
-  /** Price for one 24-hour day (PKR). */
+  /** Baseline daily starting rate (PKR). */
   daily: number;
-  /** Price for 7 days (PKR). */
-  weekly: number;
+  /** City / destination rates (PKR). */
+  cities: CityRates;
   /** Price for 30 days (PKR). */
   monthly: number;
-  /** Free kilometres included per day. */
-  freeKmPerDay: number;
-  /** Charge per extra kilometre (PKR). */
-  extraKmRate: number;
-  /** Refundable security deposit (PKR). */
-  securityDeposit: number;
+  /** Monthly note e.g. "plus oil change" */
+  monthlyNote: string;
 }
 
 export interface Car {
@@ -86,33 +93,36 @@ export const CARS: Car[] = [
     colorHex: "#E7E9EE",
     image: "/cars/toyota-corolla-altis.jpeg",
     blurb:
-      "Pakistan's most trusted sedan — smooth, spacious and effortless to drive in traffic.",
+      "Pakistan's most trusted automatic sedan — smooth, spacious self-drive experience.",
     description:
-      "The Toyota Corolla Altis automatic is the flagship of the QHQ Motors fleet and the number one choice for overseas families visiting Chenab Nagar (Rabwah). The 1.6 litre automatic gearbox makes Lahore, Faisalabad and Islamabad airport runs stress-free, while the wide cabin and deep boot swallow luggage for a family of five. Ice-cold air conditioning, dual airbags, ABS and a full service history keep every trip comfortable and safe.",
+      "The Toyota Corolla Altis automatic is the flagship of the QHQ Motors self-drive fleet and the number one choice for overseas families visiting Chenab Nagar (Rabwah). The 1.6 litre automatic gearbox makes Lahore, Faisalabad, Sargodha and Islamabad journeys stress-free, while the wide cabin and deep boot swallow luggage for a family of five. Ice-cold air conditioning, dual airbags, ABS and a full service history keep every trip comfortable and safe.",
     features: [
+      "100% Self-drive only",
       "Fully automatic transmission",
+      "Airport delivery available",
       "Ice-cold climate air conditioning",
       "Power steering & windows",
       "Dual airbags + ABS",
-      "Large boot for airport luggage",
+      "Large boot for luggage",
       "Bluetooth audio & USB charging",
-      "Rear AC vents",
-      "Full service history",
     ],
     bestFor: [
-      "Airport transfers",
+      "Airport delivery",
+      "Self-drive trips",
       "Family visits",
-      "Meetings & interviews",
-      "Wedding guests",
-      "Long drives",
+      "Inter-city travel",
+      "Monthly rental",
     ],
     rates: {
-      daily: 6000,
-      weekly: 36000,
+      daily: 5000,
+      cities: {
+        fsd: 5000,
+        srg: 5000,
+        lhr: 5500,
+        isl: 6000,
+      },
       monthly: 120000,
-      freeKmPerDay: 120,
-      extraKmRate: 32,
-      securityDeposit: 20000,
+      monthlyNote: "Plus oil change",
     },
     rating: 5,
     reviews: 128,
@@ -144,33 +154,36 @@ export const CARS: Car[] = [
     colorHex: "#B9BEC7",
     image: "/cars/suzuki-alto.jpeg",
     blurb:
-      "The most economical automatic in Pakistan — perfect for town errands and short visits.",
+      "The most economical automatic self-drive in Pakistan — perfect for town errands & city trips.",
     description:
-      "The Suzuki Alto VXL automatic is the lightest car on the QHQ Motors fleet and easily the most economical. Its 660cc engine and automatic gearbox return 18–22 km per litre, which makes it ideal for guests who want to move around Chenab Nagar, Rabwah, Chiniot and Faisalabad all day without watching the fuel gauge. Compact enough for the busiest bazaar lanes, yet it still fits four adults plus luggage comfortably.",
+      "The Suzuki Alto VXL automatic is the lightest car on the QHQ Motors self-drive fleet and easily the most economical. Its 660cc engine and automatic gearbox return 18–22 km per litre, making it ideal for guests travelling to Faisalabad, Sargodha, Lahore, Islamabad or moving around Chenab Nagar and Rabwah. Compact enough for narrow bazaar lanes, yet fits four adults comfortably.",
     features: [
+      "100% Self-drive only",
       "Fully automatic transmission",
+      "Airport delivery available",
       "Best-in-class fuel economy",
       "Air conditioning",
       "Power steering",
       "Compact & easy to park",
       "Bluetooth audio",
-      "Great for narrow bazaar lanes",
-      "Low daily rent",
     ],
     bestFor: [
+      "City trips",
       "Local errands",
       "Budget travellers",
-      "Single travellers",
-      "Couples",
-      "Short stays",
+      "Single travellers & couples",
+      "Monthly rental",
     ],
     rates: {
-      daily: 5000,
-      weekly: 30000,
-      monthly: 100000,
-      freeKmPerDay: 100,
-      extraKmRate: 22,
-      securityDeposit: 12000,
+      daily: 4500,
+      cities: {
+        fsd: 4500,
+        srg: 4500,
+        lhr: 5000,
+        isl: 5500,
+      },
+      monthly: 105000,
+      monthlyNote: "Plus oil change",
     },
     rating: 4.9,
     reviews: 96,
@@ -179,7 +192,7 @@ export const CARS: Car[] = [
     keywords: [
       "Suzuki Alto automatic rental Chenab Nagar",
       "budget automatic car hire Rabwah",
-      "Alto VXL rental Faisalabad",
+      "Alto VXL self drive Faisalabad",
       "cheap automatic car rental Pakistan",
     ],
   },

@@ -156,11 +156,14 @@ export function fleetToTypeScript(cars: Car[]): string {
       );
       lines.push("    rates: {");
       lines.push(`      daily: ${car.rates.daily},`);
-      lines.push(`      weekly: ${car.rates.weekly},`);
+      lines.push("      cities: {");
+      lines.push(`        fsd: ${car.rates.cities?.fsd ?? car.rates.daily},`);
+      lines.push(`        srg: ${car.rates.cities?.srg ?? car.rates.daily},`);
+      lines.push(`        lhr: ${car.rates.cities?.lhr ?? car.rates.daily},`);
+      lines.push(`        isl: ${car.rates.cities?.isl ?? car.rates.daily},`);
+      lines.push("      },");
       lines.push(`      monthly: ${car.rates.monthly},`);
-      lines.push(`      freeKmPerDay: ${car.rates.freeKmPerDay},`);
-      lines.push(`      extraKmRate: ${car.rates.extraKmRate},`);
-      lines.push(`      securityDeposit: ${car.rates.securityDeposit},`);
+      lines.push(`      monthlyNote: ${JSON.stringify(car.rates.monthlyNote || "Plus oil change")},`);
       lines.push("    },");
       lines.push(`    rating: ${car.rating},`);
       lines.push(`    reviews: ${car.reviews},`);
@@ -216,15 +219,18 @@ export function emptyCar(): Car {
     image: "/cars/placeholder-car.svg",
     blurb: "",
     description: "",
-    features: ["Fully automatic transmission", "Air conditioning"],
-    bestFor: ["Airport transfers", "Local errands"],
+    features: ["100% Self-drive only", "Fully automatic transmission", "Air conditioning"],
+    bestFor: ["Airport delivery", "City trips"],
     rates: {
-      daily: 5000,
-      weekly: 30000,
-      monthly: 100000,
-      freeKmPerDay: 100,
-      extraKmRate: 25,
-      securityDeposit: 15000,
+      daily: 4500,
+      cities: {
+        fsd: 4500,
+        srg: 4500,
+        lhr: 5000,
+        isl: 5500,
+      },
+      monthly: 105000,
+      monthlyNote: "Plus oil change",
     },
     rating: 5,
     reviews: 0,

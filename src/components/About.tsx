@@ -40,16 +40,14 @@ export function About() {
                 </p>
                 <p>
                   We decided to do the opposite. Every car we hand over is{" "}
-                  <strong className="font-bold text-white">automatic</strong>,
-                  washed, serviced and insured. Every price is fixed in advance
-                  on WhatsApp. Every airport pickup is met in person, with a
-                  name board and cold water waiting in the car.
+                  <strong className="font-bold text-white">automatic</strong> and
+                  dedicated for <strong className="font-bold text-white">100% self-drive</strong>,
+                  washed, serviced and insured. Every price is simple and confirmed in advance
+                  on WhatsApp. Airport deliveries to Lahore, Faisalabad and Islamabad are handled smoothly on landing.
                 </p>
                 <p>
-                  Today QHQ Motors looks after families, students, wedding
-                  parties, doctors and business travellers across Punjab — and
-                  most of our bookings come from guests who came back, or from
-                  the people they told about us.
+                  Today QHQ Motors looks after families, overseas guests, wedding
+                  parties, doctors and business travellers across Punjab — with straightforward pricing and zero hidden fees.
                 </p>
               </div>
             </Reveal>
@@ -59,13 +57,13 @@ export function About() {
                 {
                   icon: Car,
                   label: "Fleet",
-                  value: "Automatic only",
+                  value: "Self-Drive Automatic",
                   note: "Corolla Altis & Suzuki Alto",
                 },
                 {
                   icon: Heart,
                   label: "Promise",
-                  value: "Fixed price",
+                  value: "Simple pricing",
                   note: "Quoted before you travel",
                 },
                 {
@@ -97,7 +95,6 @@ export function About() {
               ))}
             </RevealGroup>
           </div>
-
 
           <div className="lg:pt-14">
             <Reveal direction="left">

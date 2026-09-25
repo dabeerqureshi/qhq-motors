@@ -1,11 +1,12 @@
 "use client";
 
-import { BadgeCheck, Clock, CreditCard, Headphones, Plane, ShieldCheck } from "lucide-react";
+import { BadgeCheck, Clock, CreditCard, Headphones, Key, Plane, ShieldCheck } from "lucide-react";
 import { SITE } from "@/data/site";
 
 const SIGNALS = [
-  { icon: ShieldCheck, label: "Fully insured & verified vehicles" },
-  { icon: Plane, label: "24/7 airport meet & greet" },
+  { icon: Key, label: "100% self-drive privacy" },
+  { icon: ShieldCheck, label: "Fully verified automatic cars" },
+  { icon: Plane, label: "24/7 airport car delivery" },
   { icon: BadgeCheck, label: "100% automatic fleet" },
   { icon: CreditCard, label: "Cash · Bank · Easypaisa · JazzCash" },
   { icon: Clock, label: "Free delivery in Chenab Nagar" },
@@ -40,10 +41,10 @@ export function TrustBar() {
       {/* served-airport strip (SEO signal for airport searches) */}
       <div className="container-x mt-4 hidden flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11.5px] text-slate-500 md:flex">
         <span className="font-bold tracking-[0.16em] text-slate-400 uppercase">
-          Airports we serve:
+          Airport Car Delivery:
         </span>
         {SITE.pickupPoints
-          .filter((p) => p.id === "lhe" || p.id === "lyp" || p.id === "isb" || p.id === "skt")
+          .filter((p) => p.id === "lhe" || p.id === "lyp" || p.id === "isb")
           .map((p) => (
             <span key={p.id} className="flex items-center gap-1.5">
               <Plane size={12} className="text-gold-500" />

@@ -5,6 +5,7 @@ import {
   Banknote,
   Clock,
   Headphones,
+  Key,
   Plane,
   Users,
 } from "lucide-react";
@@ -16,32 +17,32 @@ const REASONS = [
   {
     icon: BadgeCheck,
     title: "100% automatic fleet",
-    text: "No clutch, no manual gears. Every QHQ Motors car is automatic, so new drivers and overseas guests can drive confidently from the first minute.",
+    text: "No clutch, no manual gears. Every QHQ Motors car is automatic, so you can drive effortlessly and comfortably in city or highway traffic.",
+  },
+  {
+    icon: Key,
+    title: "100% self-drive privacy",
+    text: "Complete freedom for you and your family. No drivers, no waiting around, and no awkwardness — the car is entirely yours for your stay.",
   },
   {
     icon: Plane,
-    title: "24/7 airport meet & greet",
-    text: "We track your flight and wait inside arrivals with a name board at Lahore, Faisalabad, Islamabad and Sialkot airports — day or night.",
+    title: "24/7 airport car delivery",
+    text: "We track your flight and deliver your self-drive car directly to Lahore, Faisalabad or Islamabad airport on arrival — day or night.",
   },
   {
     icon: Banknote,
-    title: "Honest, fixed pricing",
-    text: "The price we quote on WhatsApp is the price you pay. No fuel mark-ups, no mystery charges, no last-minute surprises at handover.",
+    title: "Honest, transparent pricing",
+    text: "Clear destination and monthly rates. The price we confirm on WhatsApp is the price you pay — no hidden charges or surprises.",
   },
   {
     icon: Clock,
-    title: "Free delivery & collection",
-    text: "Your car comes to your family home, hotel or guest house anywhere in Chenab Nagar and Rabwah — and we collect it when you are done.",
+    title: "Free doorstep delivery",
+    text: "Your car comes straight to your family home, hotel or guest house anywhere in Chenab Nagar and Rabwah — collected when you are done.",
   },
   {
     icon: Headphones,
     title: "One WhatsApp away",
-    text: "Our team replies in minutes, in English or Urdu, 24 hours a day. Whether you need a late pickup or a route tip, we are on the phone.",
-  },
-  {
-    icon: Users,
-    title: "Family-run, community trusted",
-    text: "QHQ Motors is a local family business serving Rabwah guests since day one. Most of our bookings come from returning customers and their referrals.",
+    text: "Our team replies in minutes, in English or Urdu, 24 hours a day. Whether you need an extension or route guidance, we are always available.",
   },
 ];
 
@@ -85,7 +86,7 @@ export function WhyUs() {
           {[
             { value: 480, suffix: "+", label: "Completed bookings" },
             { value: 4.9, suffix: "/5", decimals: 1, label: "Average rating" },
-            { value: 24, suffix: "/7", label: "Support & pickups" },
+            { value: 24, suffix: "/7", label: "Support & airport delivery" },
             { value: 12, suffix: "+", label: "Cities served" },
           ].map((s) => (
             <RevealItem key={s.label} className="text-center">

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import {
   Clock,
-  Luggage,
+  Key,
   MapPinned,
   MessageCircle,
   Plane,
@@ -27,17 +27,17 @@ export function Airport() {
 
       <div className="container-x">
         <SectionHeading
-          eyebrow="Airport pickup & drop-off · 24/7"
+          eyebrow="Airport car delivery · 24/7"
           title="Landing in Pakistan?"
-          highlight="Your car is already waiting"
-          description="QHQ Motors is the trusted airport transfer partner for overseas families coming home to Chenab Nagar and Rabwah. We track your flight, meet you at arrivals with a name board and drive you home — no haggling, no waiting, no surprises."
+          highlight="We deliver your car to the airport"
+          description="Flying home to Chenab Nagar or Rabwah? We deliver your clean, automatic self-drive car straight to Lahore, Faisalabad or Islamabad airport on arrival. Step off your flight, take the keys and drive yourself home in comfort."
         />
 
         <RevealGroup className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { icon: Clock, label: "Reception desk", value: "24 / 7" },
-            { icon: Timer, label: "Flight tracking", value: "Live" },
-            { icon: Luggage, label: "Luggage help", value: "Included" },
+            { icon: Key, label: "Self drive handover", value: "At arrivals" },
+            { icon: Timer, label: "Flight tracking", value: "24 / 7 Live" },
+            { icon: Clock, label: "Night flights", value: "Welcome" },
             { icon: ShieldCheck, label: "Fixed price", value: "Guaranteed" },
           ].map((s) => (
             <RevealItem
@@ -58,7 +58,6 @@ export function Airport() {
             </RevealItem>
           ))}
         </RevealGroup>
-
 
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {AIRPORT_TRANSFERS.map((t, i) => (
@@ -103,41 +102,42 @@ export function Airport() {
               <div className="mt-5 grid grid-cols-2 gap-3">
                 <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                   <p className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
-                    Corolla Altis
-                  </p>
-                  <p className="font-display text-lg font-extrabold text-white">
-                    {formatPKR(t.sedanPrice)}
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-                  <p className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
                     Suzuki Alto
                   </p>
                   <p className="font-display text-lg font-extrabold text-white">
                     {formatPKR(t.altoPrice)}
                   </p>
                 </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <p className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
+                    Corolla Altis
+                  </p>
+                  <p className="font-display text-lg font-extrabold text-gold-300">
+                    {formatPKR(t.altisPrice)}
+                  </p>
+                </div>
               </div>
 
               <div className="mt-4 flex items-center justify-between gap-3">
-                <p className="text-[11px] text-slate-500">
-                  One way, meet &amp; greet included · ≈{" "}
+                <p className="text-[11px] text-slate-400">
+                  Self-drive airport delivery · ≈{" "}
                   {formatForeign(t.altoPrice, "USD")}–
-                  {formatForeign(t.sedanPrice, "USD")}
+                  {formatForeign(t.altisPrice, "USD")}
                 </p>
                 <button
                   type="button"
                   onClick={() => {
                     logger.success(
                       "airport.book",
-                      `Airport transfer requested: ${t.code}`,
+                      `Airport car delivery requested: ${t.code}`,
                       { code: t.code },
                     );
                     openWhatsApp(
                       buildBookingMessage({
                         pickup: t.name,
+                        airportDelivery: true,
                         notes:
-                          "Airport transfer — please send me a firm quote. My flight number is: ",
+                          `Airport delivery requested at ${t.name}. My flight number and landing date are: `,
                       }),
                       { pickup: t.name },
                       `airport-${t.code}`,
@@ -145,7 +145,7 @@ export function Airport() {
                   }}
                   className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-br from-[#2ee06f] to-[#128c7e] px-4 py-2.5 text-[12px] font-extrabold text-white transition hover:brightness-110"
                 >
-                  <MessageCircle size={13} /> Book
+                  <MessageCircle size={13} /> Book delivery
                 </button>
               </div>
             </motion.article>

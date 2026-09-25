@@ -5,67 +5,71 @@ import { formatPKR } from "@/lib/utils";
 
 export interface BookingDetails {
   car?: Car | null;
-  /** "daily" | "weekly" | "monthly" */
-  plan?: "daily" | "weekly" | "monthly";
+  /** "trip" | "monthly" | "daily" */
+  plan?: string;
+  destinationCity?: string;
   pickup?: string;
   dropoff?: string;
   pickupDate?: string;
   returnDate?: string;
   days?: number;
-  withDriver?: boolean;
-  passengers?: number;
+  months?: number;
+  airportDelivery?: boolean;
   name?: string;
   notes?: string;
+  rate?: number;
 }
-
-const PLAN_TITLES: Record<string, string> = {
-  daily: "Daily Rental",
-  weekly: "Weekly Rental (7 days)",
-  monthly: "Monthly Rental (30 days)",
-};
 
 /** Build a tidy, human readable WhatsApp booking message. */
 export function buildBookingMessage(details: BookingDetails = {}): string {
   const lines: string[] = [];
   lines.push("*NEW BOOKING REQUEST — QHQ Motors*");
+  lines.push("_Self-Drive Automatic Car Rental_");
   lines.push("");
 
   if (details.name) lines.push(`Name: ${details.name}`);
   if (details.car) {
     lines.push(
-      `Car: ${details.car.name} ${details.car.variant} (${details.car.transmission})`,
+      `Car: ${details.car.name} ${details.car.variant} (Automatic · Self-Drive)`,
     );
   }
-  if (details.plan) {
-    lines.push(`Plan: ${PLAN_TITLES[details.plan] ?? details.plan}`);
+  if (details.destinationCity) {
+    lines.push(`Destination / Route: ${details.destinationCity}`);
   }
-  if (details.pickup) lines.push(`Pickup point: ${details.pickup}`);
+  if (details.plan) {
+    lines.push(`Plan: ${details.plan}`);
+  }
+  if (details.pickup) lines.push(`Pickup / Delivery point: ${details.pickup}`);
   if (details.dropoff) lines.push(`Drop-off: ${details.dropoff}`);
   if (details.pickupDate) lines.push(`Pickup date: ${details.pickupDate}`);
   if (details.returnDate) lines.push(`Return date: ${details.returnDate}`);
-  if (details.days) lines.push(`Duration: ${details.days} day(s)`);
-  if (typeof details.passengers === "number") {
-    lines.push(`Passengers: ${details.passengers}`);
+  if (details.days && details.days > 0) lines.push(`Duration: ${details.days} day(s)`);
+  if (details.months && details.months > 0) {
+    lines.push(`Duration: ${details.months} month(s) (+ oil change)`);
   }
-  if (typeof details.withDriver === "boolean") {
-    lines.push(`Driver: ${details.withDriver ? "With driver" : "Self drive"}`);
+  if (details.airportDelivery) {
+    lines.push("Service: Airport Car Delivery requested");
   }
-  if (details.car && details.plan) {
-    const rate =
-      details.plan === "daily"
-        ? details.car.rates.daily
-        : details.plan === "weekly"
-          ? details.car.rates.weekly
-          : details.car.rates.monthly;
-    lines.push(`Listed rate: ${formatPKR(rate)}`);
+
+  if (details.rate) {
+    lines.push(`Quoted Rate: ${formatPKR(details.rate)}`);
+  } else if (details.car) {
+    if (details.plan?.toLowerCase().includes("month")) {
+      lines.push(
+        `Monthly Rate: ${formatPKR(details.car.rates.monthly)}/month (+ oil change)`,
+      );
+    } else {
+      lines.push(`Daily starting rate: ${formatPKR(details.car.rates.daily)}/day`);
+    }
   }
+
   if (details.notes) {
     lines.push("");
     lines.push(`Notes: ${details.notes}`);
   }
 
   lines.push("");
-  lines.push("Please confirm availability & total price. Shukriya!");
+  lines.push("Please confirm availability & booking. Shukriya!");
   return lines.join("\n");
 }
 
@@ -86,9 +90,6 @@ export function openWhatsApp(
   });
 
   if (typeof document !== "undefined") {
-    /* Trigger a real link navigation instead of window.open — behaves
-       identically on mobile (opens the WhatsApp app) and desktop (new tab),
-       and is far less likely to be blocked by popup filters. */
     const link = document.createElement("a");
     link.href = url;
     link.target = "_blank";

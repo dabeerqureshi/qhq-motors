@@ -128,6 +128,23 @@ export function AdminPanel() {
     setDraft((d) => (d ? { ...d, rates: { ...d.rates, ...p } } : d));
   }
 
+  function updCityRate(city: keyof Car["rates"]["cities"], val: number) {
+    setDraft((d) =>
+      d
+        ? {
+            ...d,
+            rates: {
+              ...d.rates,
+              cities: {
+                ...d.rates.cities,
+                [city]: val,
+              },
+            },
+          }
+        : d,
+    );
+  }
+
   /* ---------------- dashboard ---------------- */
   async function copyTypeScript() {
     try {
@@ -217,12 +234,10 @@ export function AdminPanel() {
       </div>
 
       <p className="mt-4 rounded-2xl border border-white/10 bg-ink-900/60 px-4 py-3 text-[12.5px] leading-relaxed text-slate-400">
-        Edits are saved in this browser only (no database, no cost). When you are
-        happy with the result, press{" "}
+        Edits are saved in this browser only. When you are happy with the result, press{" "}
         <strong className="font-bold text-gold-200">“Copy cars.ts block”</strong>{" "}
         and paste it over the <code className="text-gold-300">CARS</code> array in{" "}
-        <code className="text-gold-300">src/data/cars.ts</code>, then redeploy —
-        the changes become permanent and SEO-visible.
+        <code className="text-gold-300">src/data/cars.ts</code>.
       </p>
 
       {/* car list */}
@@ -242,9 +257,8 @@ export function AdminPanel() {
                 {car.name}{" "}
                 <span className="font-semibold text-gold-300">{car.variant}</span>
               </p>
-              <p className="text-[12px] text-slate-500">
-                {car.year} · {car.category} · {formatPKR(car.rates.daily)}/day ·{" "}
-                {car.reviews} reviews
+              <p className="text-[12px] text-slate-400">
+                {car.year} · {car.category} · FSD: {formatPKR(car.rates.cities?.fsd ?? car.rates.daily)} · Monthly: {formatPKR(car.rates.monthly)}
               </p>
             </div>
 
@@ -304,7 +318,6 @@ export function AdminPanel() {
           </div>
         ))}
       </div>
-
 
       {/* ---------- edit modal ---------- */}
       {draft && (
@@ -418,7 +431,6 @@ export function AdminPanel() {
                 />
               </label>
 
-
               <label className="block">
                 <span className={LABEL}>Seats</span>
                 <input
@@ -477,7 +489,7 @@ export function AdminPanel() {
                 <input
                   value={draft.image}
                   onChange={(e) => upd({ image: e.target.value })}
-                  placeholder="/cars/toyota-corolla-altis.svg"
+                  placeholder="/cars/toyota-corolla-altis.jpeg"
                   className={INPUT}
                 />
               </label>
@@ -500,65 +512,75 @@ export function AdminPanel() {
                 />
               </label>
 
-
-              <label className="block">
-                <span className={LABEL}>Features (one per line)</span>
-                <textarea
-                  rows={5}
-                  value={draft.features.join("\n")}
-                  onChange={(e) =>
-                    upd({
-                      features: e.target.value
-                        .split("\n")
-                        .map((s) => s.trim())
-                        .filter(Boolean),
-                    })
-                  }
-                  className={`${INPUT} resize-y`}
-                />
-              </label>
-              <label className="block">
-                <span className={LABEL}>Best for (one per line)</span>
-                <textarea
-                  rows={5}
-                  value={draft.bestFor.join("\n")}
-                  onChange={(e) =>
-                    upd({
-                      bestFor: e.target.value
-                        .split("\n")
-                        .map((s) => s.trim())
-                        .filter(Boolean),
-                    })
-                  }
-                  className={`${INPUT} resize-y`}
-                />
-              </label>
-
               <div className="sm:col-span-2">
                 <p className={LABEL}>Rates (PKR)</p>
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {(
-                    [
-                      ["Daily", "daily"],
-                      ["Weekly", "weekly"],
-                      ["Monthly", "monthly"],
-                      ["Free km/day", "freeKmPerDay"],
-                      ["Extra km rate", "extraKmRate"],
-                      ["Deposit", "securityDeposit"],
-                    ] as const
-                  ).map(([label, key]) => (
-                    <label key={key} className="block">
-                      <span className={LABEL}>{label}</span>
-                      <input
-                        type="number"
-                        value={draft.rates[key]}
-                        onChange={(e) =>
-                          updRates({ [key]: Number(e.target.value) })
-                        }
-                        className={INPUT}
-                      />
-                    </label>
-                  ))}
+                  <label className="block">
+                    <span className={LABEL}>Faisalabad (FSD)</span>
+                    <input
+                      type="number"
+                      value={draft.rates.cities?.fsd ?? draft.rates.daily}
+                      onChange={(e) =>
+                        updCityRate("fsd", Number(e.target.value))
+                      }
+                      className={INPUT}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className={LABEL}>Sargodha (SRG)</span>
+                    <input
+                      type="number"
+                      value={draft.rates.cities?.srg ?? draft.rates.daily}
+                      onChange={(e) =>
+                        updCityRate("srg", Number(e.target.value))
+                      }
+                      className={INPUT}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className={LABEL}>Lahore (LHR)</span>
+                    <input
+                      type="number"
+                      value={draft.rates.cities?.lhr ?? draft.rates.daily}
+                      onChange={(e) =>
+                        updCityRate("lhr", Number(e.target.value))
+                      }
+                      className={INPUT}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className={LABEL}>Islamabad (ISB)</span>
+                    <input
+                      type="number"
+                      value={draft.rates.cities?.isl ?? draft.rates.daily}
+                      onChange={(e) =>
+                        updCityRate("isl", Number(e.target.value))
+                      }
+                      className={INPUT}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className={LABEL}>Monthly Rate</span>
+                    <input
+                      type="number"
+                      value={draft.rates.monthly}
+                      onChange={(e) =>
+                        updRates({ monthly: Number(e.target.value) })
+                      }
+                      className={INPUT}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className={LABEL}>Monthly Note</span>
+                    <input
+                      type="text"
+                      value={draft.rates.monthlyNote || "Plus oil change"}
+                      onChange={(e) =>
+                        updRates({ monthlyNote: e.target.value })
+                      }
+                      className={INPUT}
+                    />
+                  </label>
                 </div>
               </div>
 
@@ -630,4 +652,3 @@ export function AdminPanel() {
     </div>
   );
 }
-

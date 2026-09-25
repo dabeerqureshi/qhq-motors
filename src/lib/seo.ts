@@ -25,10 +25,10 @@ export function localBusinessSchema() {
     email: SITE.email,
     image: `${SITE.url}/og-image.svg`,
     logo: `${SITE.url}/logo.svg`,
-    priceRange: "Rs 5,000 – Rs 120,000",
+    priceRange: "Rs 4,500 – Rs 120,000",
     currenciesAccepted: "PKR",
     paymentAccepted: "Cash, Bank Transfer, Easypaisa, JazzCash",
-    slogan: "Automatic cars, honest rates, airport pickup 24/7.",
+    slogan: "Automatic self-drive cars, honest rates, airport delivery 24/7.",
     founder: {
       "@type": "Person",
       name: SITE.founders.founder.name,
@@ -87,51 +87,39 @@ export function localBusinessSchema() {
       itemListElement: [
         {
           "@type": "Offer",
-          name: "Daily Car Rental",
+          name: "City Destination Rental",
           description:
-            "24-hour automatic car rental with 100–120 free kilometres per day.",
+            "Self-drive automatic car rental for Faisalabad, Sargodha, Lahore, and Islamabad.",
           priceCurrency: SITE.currency.code,
           priceSpecification: {
             "@type": "UnitPriceSpecification",
-            price: 5000,
+            price: 4500,
             priceCurrency: SITE.currency.code,
             unitCode: "DAY",
           },
         },
         {
           "@type": "Offer",
-          name: "Weekly Car Rental",
-          description: "7-day discounted automatic car rental package.",
-          priceCurrency: SITE.currency.code,
-          priceSpecification: {
-            "@type": "UnitPriceSpecification",
-            price: 30000,
-            priceCurrency: SITE.currency.code,
-            unitCode: "WEE",
-          },
-        },
-        {
-          "@type": "Offer",
           name: "Monthly Car Rental",
           description:
-            "30-day automatic car rental for long stays, work and family visits.",
+            "30-day automatic car rental for long stays, work and family visits (+ routine oil change).",
           priceCurrency: SITE.currency.code,
           priceSpecification: {
             "@type": "UnitPriceSpecification",
-            price: 100000,
+            price: 105000,
             priceCurrency: SITE.currency.code,
             unitCode: "MON",
           },
         },
         {
           "@type": "Offer",
-          name: "Airport Pickup & Drop",
+          name: "Airport Car Delivery",
           description:
-            "Meet and greet airport transfers from Lahore, Faisalabad, Islamabad and Sialkot airports to Chenab Nagar and Rabwah.",
+            "Self-drive car delivery to Lahore, Faisalabad and Islamabad airports on arrival.",
           priceCurrency: SITE.currency.code,
           priceSpecification: {
             "@type": "UnitPriceSpecification",
-            price: 9000,
+            price: 4500,
             priceCurrency: SITE.currency.code,
           },
         },
@@ -195,17 +183,10 @@ export function carSchema(car: Car) {
       priceSpecification: [
         {
           "@type": "UnitPriceSpecification",
-          name: "Daily rate",
+          name: "Daily rate from",
           price: car.rates.daily,
           priceCurrency: SITE.currency.code,
           unitCode: "DAY",
-        },
-        {
-          "@type": "UnitPriceSpecification",
-          name: "Weekly rate",
-          price: car.rates.weekly,
-          priceCurrency: SITE.currency.code,
-          unitCode: "WEE",
         },
         {
           "@type": "UnitPriceSpecification",
@@ -227,7 +208,7 @@ export function offersSchema(cars: Car[]) {
     itemListElement: cars.map((car, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      name: `${car.name} ${car.variant} — from ${formatPKR(car.rates.daily)}/day`,
+      name: `${car.name} ${car.variant} — from ${formatPKR(car.rates.daily)}/trip`,
       url: `${SITE.url}/#${car.id}`,
     })),
   };
@@ -266,7 +247,7 @@ export function breadcrumbSchema() {
       {
         "@type": "ListItem",
         position: 4,
-        name: "Airport Pickup",
+        name: "Airport Delivery",
         item: `${SITE.url}/#airport`,
       },
       {

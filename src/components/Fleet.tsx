@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import {
   CarFront,
   Filter,
@@ -9,7 +9,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { CarCard, type RateMode } from "@/components/CarCard";
+import { CarCard } from "@/components/CarCard";
 import { CarModal } from "@/components/CarModal";
 import { Reveal, SectionHeading } from "@/components/Reveal";
 import type { Car } from "@/data/cars";
@@ -18,17 +18,10 @@ import { logger } from "@/lib/logger";
 import { cn } from "@/lib/utils";
 import { buildBookingMessage, openWhatsApp } from "@/lib/whatsapp";
 
-const MODES: { key: RateMode; label: string; hint: string }[] = [
-  { key: "daily", label: "Daily", hint: "24 hours" },
-  { key: "weekly", label: "Weekly", hint: "7 days · save 15%" },
-  { key: "monthly", label: "Monthly", hint: "30 days · save 33%" },
-];
-
 type SortKey = "featured" | "price-asc" | "price-desc" | "seats";
 
 export function Fleet() {
   const cars = useFleet();
-  const [mode, setMode] = useState<RateMode>("daily");
   const [category, setCategory] = useState<string>("All");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("featured");
@@ -41,12 +34,7 @@ export function Fleet() {
   );
 
   const visible = useMemo(() => {
-    const priceOf = (c: Car) =>
-      mode === "daily"
-        ? c.rates.daily
-        : mode === "weekly"
-          ? c.rates.weekly
-          : c.rates.monthly;
+    const priceOf = (c: Car) => c.rates.daily;
 
     const list = cars.filter((c) => {
       const matchesCategory = category === "All" || c.category === category;
@@ -65,8 +53,7 @@ export function Fleet() {
       if (sort === "seats") return b.seats - a.seats;
       return Number(Boolean(b.featured)) - Number(Boolean(a.featured));
     });
-  }, [cars, category, query, onlyAvailable, sort, mode]);
-
+  }, [cars, category, query, onlyAvailable, sort]);
 
   return (
     <section
@@ -78,49 +65,47 @@ export function Fleet() {
       <div className="container-x">
         <SectionHeading
           eyebrow="Our automatic fleet"
-          title="Choose your car,"
-          highlight="we handle the rest"
-          description="Every car in the QHQ Motors fleet is fully automatic, air-conditioned and serviced on schedule — so you can concentrate on your family, your work or your holiday instead of traffic."
+          title="100% Self-Drive fleet,"
+          highlight="ready on demand"
+          description="Every car in the QHQ Motors fleet is fully automatic, ice-cold air-conditioned and serviced on schedule. Choose your car, take the keys and drive with complete freedom."
         />
 
         <Reveal delay={0.1} className="mt-10">
           <div className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-ink-900/70 p-4 backdrop-blur-xl lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex rounded-2xl border border-white/10 bg-ink-950/60 p-1">
-              {MODES.map((m) => (
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="flex items-center gap-1.5 text-[11px] font-bold tracking-[0.16em] text-slate-400 uppercase">
+                <Filter size={12} /> Category
+              </span>
+              {categories.map((c) => (
                 <button
-                  key={m.key}
+                  key={c}
                   type="button"
                   onClick={() => {
-                    setMode(m.key);
-                    logger.info("fleet.filter", `Rate mode → ${m.key}`);
+                    setCategory(c);
+                    logger.info("fleet.filter", `Category → ${c}`);
                   }}
                   className={cn(
-                    "relative flex-1 rounded-xl px-4 py-2.5 text-center transition",
-                    mode === m.key
-                      ? "text-ink-950"
-                      : "text-slate-300 hover:text-white",
+                    "rounded-full border px-4 py-1.5 text-[12px] font-bold transition",
+                    category === c
+                      ? "border-gold-400/60 bg-gold-400/15 text-gold-200"
+                      : "border-white/12 text-slate-300 hover:border-white/25 hover:text-white",
                   )}
                 >
-                  {mode === m.key && (
-                    <motion.span
-                      layoutId="fleet-mode"
-                      className="absolute inset-0 rounded-xl bg-gradient-to-br from-gold-300 to-gold-500"
-                      transition={{ type: "spring", stiffness: 340, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative block text-[13px] font-extrabold">
-                    {m.label}
-                  </span>
-                  <span
-                    className={cn(
-                      "relative block text-[10px] font-semibold",
-                      mode === m.key ? "text-ink-800" : "text-slate-500",
-                    )}
-                  >
-                    {m.hint}
-                  </span>
+                  {c}
                 </button>
               ))}
+              <button
+                type="button"
+                onClick={() => setOnlyAvailable((v) => !v)}
+                className={cn(
+                  "rounded-full border px-4 py-1.5 text-[12px] font-bold transition",
+                  onlyAvailable
+                    ? "border-emerald-400/60 bg-emerald-400/15 text-emerald-200"
+                    : "border-white/12 text-slate-300 hover:border-white/25 hover:text-white",
+                )}
+              >
+                Available now
+              </button>
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -134,7 +119,7 @@ export function Fleet() {
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search Corolla, Alto, sedan…"
                   aria-label="Search the fleet"
-                  className="w-full rounded-xl border border-white/12 bg-ink-950/60 py-3 pr-4 pl-10 text-[13px] font-semibold text-white outline-none transition placeholder:text-slate-500 focus:border-gold-400/60 sm:w-56"
+                  className="w-full rounded-xl border border-white/12 bg-ink-950/60 py-2.5 pr-4 pl-10 text-[13px] font-semibold text-white outline-none transition placeholder:text-slate-500 focus:border-gold-400/60 sm:w-56"
                 />
               </label>
 
@@ -147,7 +132,7 @@ export function Fleet() {
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortKey)}
                   aria-label="Sort cars"
-                  className="w-full appearance-none rounded-xl border border-white/12 bg-ink-950/60 py-3 pr-8 pl-10 text-[13px] font-semibold text-white outline-none focus:border-gold-400/60 sm:w-44"
+                  className="w-full appearance-none rounded-xl border border-white/12 bg-ink-950/60 py-2.5 pr-8 pl-10 text-[13px] font-semibold text-white outline-none focus:border-gold-400/60 sm:w-44"
                 >
                   <option value="featured">Featured first</option>
                   <option value="price-asc">Price: low to high</option>
@@ -157,55 +142,14 @@ export function Fleet() {
               </label>
             </div>
           </div>
-
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="flex items-center gap-1.5 text-[11px] font-bold tracking-[0.16em] text-slate-500 uppercase">
-              <Filter size={12} /> Filter
-            </span>
-            {categories.map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => {
-                  setCategory(c);
-                  logger.info("fleet.filter", `Category → ${c}`);
-                }}
-                className={cn(
-                  "rounded-full border px-4 py-1.5 text-[12px] font-bold transition",
-                  category === c
-                    ? "border-gold-400/60 bg-gold-400/15 text-gold-200"
-                    : "border-white/12 text-slate-300 hover:border-white/25 hover:text-white",
-                )}
-              >
-                {c}
-              </button>
-            ))}
-            <button
-              type="button"
-              onClick={() => setOnlyAvailable((v) => !v)}
-              className={cn(
-                "rounded-full border px-4 py-1.5 text-[12px] font-bold transition",
-                onlyAvailable
-                  ? "border-emerald-400/60 bg-emerald-400/15 text-emerald-200"
-                  : "border-white/12 text-slate-300 hover:border-white/25 hover:text-white",
-              )}
-            >
-              Available now
-            </button>
-            <span className="ml-auto text-[12px] font-semibold text-slate-500">
-              {visible.length} of {cars.length} cars
-            </span>
-          </div>
         </Reveal>
 
-
-        <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
           <AnimatePresence mode="popLayout">
             {visible.map((car, i) => (
               <CarCard
                 key={car.id}
                 car={car}
-                mode={mode}
                 index={i}
                 onDetails={setSelected}
               />
@@ -243,10 +187,9 @@ export function Fleet() {
           <div className="flex flex-col items-center justify-between gap-4 rounded-3xl border border-gold-500/25 bg-gradient-to-r from-gold-500/12 via-ink-900 to-ink-900 px-6 py-5 text-center sm:flex-row sm:text-left">
             <p className="text-[13.5px] text-slate-300">
               <strong className="font-bold text-white">
-                Need something else?
+                Looking for another automatic vehicle?
               </strong>{" "}
-              SUVs, vans and chauffeur-driven cars can be arranged on request —
-              just tell us your dates.
+              Other automatic cars can be arranged on request — just tell us your dates.
             </p>
             <button
               type="button"
@@ -255,7 +198,7 @@ export function Fleet() {
                 openWhatsApp(
                   buildBookingMessage({
                     notes:
-                      "I would like a custom vehicle requirement (SUV / van / chauffeur).",
+                      "I would like to inquire about a custom vehicle requirement.",
                   }),
                   undefined,
                   "fleet-request",

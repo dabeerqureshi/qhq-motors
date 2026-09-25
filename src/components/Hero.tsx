@@ -10,11 +10,11 @@ import {
   BadgeCheck,
   Clock,
   Gauge,
+  Key,
   MapPin,
   MessageCircle,
   Phone,
   Plane,
-  Route,
   ShieldCheck,
   Sparkles,
   Star,
@@ -30,8 +30,8 @@ import { formatPKR } from "@/lib/utils";
 import { buildBookingMessage, openWhatsApp } from "@/lib/whatsapp";
 
 const STATS = [
-  { icon: Clock, value: 24, suffix: "/7", label: "Airport pickup" },
-  { icon: Route, value: 180, suffix: "k+", label: "Kilometres covered" },
+  { icon: Clock, value: 24, suffix: "/7", label: "Airport delivery" },
+  { icon: Key, value: 100, suffix: "%", label: "Self-drive only" },
   { icon: Star, value: 4.9, decimals: 1, suffix: "/5", label: "Guest rating" },
   { icon: BadgeCheck, value: 100, suffix: "%", label: "Automatic fleet" },
 ];
@@ -53,7 +53,7 @@ export function Hero({ cars }: { cars: Car[] }) {
   const heroCar = cars[0];
   const fromRate = cars.length
     ? Math.min(...cars.map((c) => c.rates.daily))
-    : 5000;
+    : 4500;
 
   return (
     <section
@@ -70,7 +70,6 @@ export function Hero({ cars }: { cars: Car[] }) {
         style={{ y, opacity }}
         className="container-x relative pt-14 pb-16 lg:pt-20 lg:pb-24"
       >
-
         <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
           {/* copy */}
           <div>
@@ -90,7 +89,7 @@ export function Hero({ cars }: { cars: Car[] }) {
               transition={{ duration: 0.75, delay: 0.08 }}
               className="mt-6 text-[2.1rem] leading-[1.12] font-extrabold text-white sm:text-5xl lg:text-[3.6rem]"
             >
-              Automatic Car Rental in{" "}
+              Automatic Self-Drive Car Rental in{" "}
               <span className="text-gradient-gold">Chenab Nagar</span>{" "}
               <span className="text-slate-300">&amp;</span>{" "}
               <span className="text-gradient-gold">Rabwah</span>
@@ -104,17 +103,15 @@ export function Hero({ cars }: { cars: Car[] }) {
             >
               Clean, fully{" "}
               <strong className="font-bold text-white">automatic</strong> cars —
-              the Toyota Corolla Altis and Suzuki Alto — with honest daily,
-              weekly and monthly rates from{" "}
+              the Toyota Corolla Altis and Suzuki Alto — with simple rates from{" "}
               <strong className="font-bold text-gold-300">
                 {formatPKR(fromRate)}
               </strong>
-              . Free delivery in Chenab Nagar &amp; Rabwah, plus{" "}
+              . 100% self-drive with free delivery in Chenab Nagar &amp; Rabwah, plus{" "}
               <strong className="font-bold text-white">
-                24/7 meet-and-greet pickup
+                24/7 airport car delivery
               </strong>{" "}
-              at Lahore, Faisalabad, Islamabad and Sialkot airports for our
-              overseas guests.
+              at Lahore, Faisalabad and Islamabad airports.
             </motion.p>
 
             <motion.div
@@ -128,8 +125,8 @@ export function Hero({ cars }: { cars: Car[] }) {
                 onClick={() => {
                   logger.info("cta.click", "Hero primary CTA clicked");
                   openWhatsApp(
-                    buildBookingMessage({ car: heroCar, plan: "daily" }),
-                    { car: heroCar, plan: "daily" },
+                    buildBookingMessage({ car: heroCar, plan: "Self-Drive Booking" }),
+                    { car: heroCar },
                     "hero-primary",
                   );
                 }}
@@ -138,10 +135,10 @@ export function Hero({ cars }: { cars: Car[] }) {
                 <MessageCircle size={17} /> Book on WhatsApp
               </button>
               <a
-                href="#fleet"
+                href="#rates"
                 className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 py-4 text-[15px] font-bold text-white transition hover:border-gold-400/50 hover:bg-white/10"
               >
-                <Gauge size={17} /> See the fleet &amp; rates
+                <Gauge size={17} /> See rates &amp; packages
               </a>
               <a
                 href={`tel:${SITE.phone.tel}`}
@@ -158,16 +155,16 @@ export function Hero({ cars }: { cars: Car[] }) {
               className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 text-[13px] text-slate-300"
             >
               <span className="flex items-center gap-2">
-                <ShieldCheck size={15} className="text-gold-400" /> Verified
-                &amp; insured cars
+                <ShieldCheck size={15} className="text-gold-400" /> 100%
+                Self-drive only
               </span>
               <span className="flex items-center gap-2">
-                <Plane size={15} className="text-gold-400" /> Flight-tracked
-                pickups
+                <Plane size={15} className="text-gold-400" /> Airport car
+                delivery
               </span>
               <span className="flex items-center gap-2">
-                <Sparkles size={15} className="text-gold-400" /> No hidden
-                charges
+                <Sparkles size={15} className="text-gold-400" /> Simple
+                pricing
               </span>
             </motion.div>
 
@@ -196,7 +193,6 @@ export function Hero({ cars }: { cars: Car[] }) {
             </div>
           </div>
 
-
           {/* car visual */}
           <div className="relative">
             <motion.div
@@ -221,7 +217,7 @@ export function Hero({ cars }: { cars: Car[] }) {
                   >
                     <Image
                       src={heroCar.image}
-                      alt={`${heroCar.name} ${heroCar.variant} rental in Chenab Nagar, Pakistan`}
+                      alt={`${heroCar.name} ${heroCar.variant} self-drive in Chenab Nagar, Pakistan`}
                       width={900}
                       height={420}
                       priority
@@ -236,14 +232,13 @@ export function Hero({ cars }: { cars: Car[] }) {
                   <div className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-white/12 bg-ink-950/70 px-5 py-4 backdrop-blur-xl">
                     <div>
                       <p className="text-[11px] font-bold tracking-[0.18em] text-gold-300 uppercase">
-                        Featured automatic
+                        Featured self-drive
                       </p>
                       <p className="mt-1 font-display text-lg font-extrabold text-white">
                         {heroCar.name}
                       </p>
                       <p className="text-[12px] text-slate-400">
-                        {heroCar.variant} · {heroCar.seats} seats ·{" "}
-                        {heroCar.mileage}
+                        {heroCar.variant} · 100% Self Drive · {heroCar.mileage}
                       </p>
                     </div>
                     <div className="text-right">
@@ -251,7 +246,7 @@ export function Hero({ cars }: { cars: Car[] }) {
                       <p className="mt-1 font-display text-xl font-extrabold text-gold-300">
                         {formatPKR(heroCar.rates.daily)}
                       </p>
-                      <p className="text-[11px] text-slate-400">per day</p>
+                      <p className="text-[11px] text-slate-400">from / trip</p>
                     </div>
                   </div>
                 </div>

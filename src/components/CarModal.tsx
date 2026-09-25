@@ -5,9 +5,12 @@ import {
   Check,
   Fuel,
   Gauge,
+  MapPin,
   MessageCircle,
   Phone,
+  Plane,
   Settings2,
+  ShieldCheck,
   Sparkles,
   Users,
   X,
@@ -66,7 +69,7 @@ export function CarModal({
             <div className="sticky top-0 z-20 flex items-start justify-between gap-4 border-b border-white/10 bg-ink-900/95 px-6 py-4 backdrop-blur">
               <div>
                 <p className="text-[11px] font-bold tracking-[0.2em] text-gold-300 uppercase">
-                  {car.category} · {car.transmission}
+                  {car.category} · 100% Self-Drive · {car.transmission}
                 </p>
                 <h3 className="mt-1 font-display text-2xl font-extrabold text-white">
                   {car.name} {car.variant}
@@ -106,12 +109,12 @@ export function CarModal({
 
               <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {[
+                  { icon: ShieldCheck, k: "Drive Mode", v: "100% Self-Drive" },
                   { icon: Settings2, k: "Transmission", v: car.transmission },
                   { icon: Fuel, k: "Fuel", v: `${car.fuel} · ${car.mileage}` },
                   { icon: Users, k: "Capacity", v: `${car.seats} adults` },
                   { icon: Gauge, k: "Engine", v: car.engine },
                   { icon: Sparkles, k: "Model year", v: String(car.year) },
-                  { icon: Check, k: "Colour", v: car.colorName },
                 ].map((s) => (
                   <div
                     key={s.k}
@@ -128,64 +131,74 @@ export function CarModal({
                 ))}
               </div>
 
-              <p className="mt-4 flex items-center gap-2 rounded-xl border border-white/8 bg-white/5 px-4 py-3 text-[12.5px] text-slate-300">
-                <Check size={14} className="text-gold-400" />
-                <span className="font-semibold text-slate-400">Luggage:</span>{" "}
-                {car.luggage}
-              </p>
-
-
-              <h4 className="mt-7 font-display text-lg font-extrabold text-white">
-                Rental rates
+              {/* Destination Rates */}
+              <h4 className="mt-7 flex items-center gap-2 font-display text-lg font-extrabold text-white">
+                <MapPin size={17} className="text-gold-400" /> City &amp; Destination Rates
               </h4>
-              <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                {(
-                  [
-                    { k: "daily" as const, label: "Daily" },
-                    { k: "weekly" as const, label: "Weekly (7 days)" },
-                    { k: "monthly" as const, label: "Monthly (30 days)" },
-                  ]
-                ).map((plan) => (
+              <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {[
+                  { city: "Faisalabad", rate: car.rates.cities.fsd },
+                  { city: "Sargodha", rate: car.rates.cities.srg },
+                  { city: "Lahore", rate: car.rates.cities.lhr },
+                  { city: "Islamabad", rate: car.rates.cities.isl },
+                ].map((item) => (
                   <div
-                    key={plan.k}
-                    className="flex flex-col rounded-2xl border border-gold-500/25 bg-gold-500/10 p-4"
+                    key={item.city}
+                    className="flex flex-col justify-between rounded-2xl border border-white/10 bg-white/5 p-3.5"
                   >
-                    <p className="text-[10.5px] font-bold tracking-[0.16em] text-gold-300 uppercase">
-                      {plan.label}
+                    <p className="text-[11px] font-bold text-slate-400 uppercase">
+                      {item.city}
                     </p>
-                    <p className="mt-1 font-display text-xl font-extrabold text-white">
-                      {formatPKR(car.rates[plan.k])}
+                    <p className="mt-1 font-display text-lg font-extrabold text-white">
+                      {formatPKR(item.rate)}
                     </p>
-                    <p className="text-[11px] text-slate-400">
-                      ≈ {formatForeign(car.rates[plan.k], "USD")}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        logger.success(
-                          "booking.modal",
-                          `Modal booking started (${plan.k}) for ${car.name}`,
-                          { car: car.id, plan: plan.k },
-                        );
-                        openWhatsApp(
-                          buildBookingMessage({ car, plan: plan.k }),
-                          { car, plan: plan.k },
-                          `modal-${car.id}`,
-                        );
-                      }}
-                      className="mt-3 inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-br from-[#2ee06f] to-[#128c7e] px-4 py-2.5 text-[12.5px] font-extrabold text-white transition hover:brightness-110"
-                    >
-                      <MessageCircle size={13} /> Book{" "}
-                      {plan.label.split(" ")[0]}
-                    </button>
+                    <p className="text-[10px] text-slate-500">per trip / day</p>
                   </div>
                 ))}
+              </div>
+
+              {/* Monthly Rate Box */}
+              <div className="mt-4 flex flex-col justify-between gap-3 rounded-2xl border border-gold-500/30 bg-gold-500/10 p-4 sm:flex-row sm:items-center">
+                <div>
+                  <p className="text-[10.5px] font-bold tracking-[0.16em] text-gold-300 uppercase">
+                    Monthly Rental Package
+                  </p>
+                  <p className="mt-0.5 font-display text-2xl font-extrabold text-white">
+                    {formatPKR(car.rates.monthly)}{" "}
+                    <span className="text-[12px] font-normal text-slate-400">/ 30 days</span>
+                  </p>
+                  <p className="text-[11.5px] text-amber-300">
+                    * Client covers routine oil change during monthly rental
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    logger.success(
+                      "booking.modal.monthly",
+                      `Monthly booking started for ${car.name}`,
+                    );
+                    openWhatsApp(
+                      buildBookingMessage({
+                        car,
+                        plan: "Monthly Rental (30 days)",
+                        rate: car.rates.monthly,
+                        notes: "Monthly booking request (+ oil change).",
+                      }),
+                      { car },
+                      `modal-monthly-${car.id}`,
+                    );
+                  }}
+                  className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-gradient-to-br from-[#2ee06f] to-[#128c7e] px-5 py-2.5 text-[12.5px] font-extrabold text-white transition hover:brightness-110"
+                >
+                  <MessageCircle size={14} /> Book Monthly
+                </button>
               </div>
 
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <div>
                   <h5 className="text-[12px] font-bold tracking-[0.16em] text-gold-300 uppercase">
-                    Included
+                    Key Features
                   </h5>
                   <ul className="mt-2 space-y-1.5">
                     {car.features.map((f) => (
@@ -204,15 +217,15 @@ export function CarModal({
                 </div>
                 <div>
                   <h5 className="text-[12px] font-bold tracking-[0.16em] text-gold-300 uppercase">
-                    Good to know
+                    Rental Policy
                   </h5>
                   <ul className="mt-2 space-y-1.5 text-[12.5px] text-slate-300">
                     {[
-                      `${car.rates.freeKmPerDay} free kilometres every day`,
-                      `${formatPKR(car.rates.extraKmRate)} per additional kilometre`,
-                      `Refundable security deposit ${formatPKR(car.rates.securityDeposit)}`,
-                      "Fuel, tolls & driver meals are the guest's responsibility",
-                      "Free delivery & collection in Chenab Nagar / Rabwah",
+                      "100% Self-drive rental only (no driver)",
+                      "Airport car delivery available (Lahore, Faisalabad, Islamabad)",
+                      "Free doorstep delivery inside Chenab Nagar & Rabwah",
+                      "Simple honest rates — no kilometre limits or hidden fees",
+                      "Monthly rentals: client maintains routine oil change",
                     ].map((line) => (
                       <li key={line} className="flex items-start gap-2">
                         <Check
@@ -226,17 +239,13 @@ export function CarModal({
                 </div>
               </div>
 
-              <p className="mt-6 text-[11px] leading-relaxed text-slate-600">
-                {car.keywords.join(" · ")}
-              </p>
-
               <div className="mt-6 flex flex-wrap gap-3">
                 <button
                   type="button"
                   onClick={() =>
                     openWhatsApp(
-                      buildBookingMessage({ car, plan: "daily" }),
-                      { car, plan: "daily" },
+                      buildBookingMessage({ car, plan: "Self-Drive Rental" }),
+                      { car },
                       `modal-cta-${car.id}`,
                     )
                   }

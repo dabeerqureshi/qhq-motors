@@ -171,15 +171,13 @@ export function Footer() {
         <div className="mt-12 border-t border-white/8 pt-8">
           <p className="text-[11.5px] leading-relaxed text-slate-500">
             <strong className="font-bold text-slate-400">QHQ Motors</strong>{" "}
-            provides automatic car rental in Chenab Nagar (Rabwah) and the
+            provides automatic self-drive car rental in Chenab Nagar (Rabwah) and the
             surrounding cities of Chiniot, Faisalabad, Sargodha, Jhang, Bhalwal
             and Sahiwal. Popular services include Toyota Corolla Altis automatic
-            rental, Suzuki Alto automatic rental, self-drive car hire, cars with
-            driver, wedding car rental, monthly car rental for overseas
-            Pakistanis, and 24/7 airport pickup and drop-off from Allama Iqbal
-            International Airport Lahore (LHE), Faisalabad International Airport
-            (LYP), Islamabad International Airport (ISB) and Sialkot
-            International Airport (SKT).
+            rental, Suzuki Alto automatic rental, self-drive car hire, destination
+            trips, monthly car rental for overseas Pakistanis, and 24/7 airport car delivery
+            to Allama Iqbal International Airport Lahore (LHE), Faisalabad International Airport
+            (LYP), and Islamabad International Airport (ISB).
           </p>
         </div>
 
