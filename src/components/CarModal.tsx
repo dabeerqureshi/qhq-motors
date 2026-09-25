@@ -8,7 +8,6 @@ import {
   MapPin,
   MessageCircle,
   Phone,
-  Plane,
   Settings2,
   ShieldCheck,
   Sparkles,
@@ -21,7 +20,7 @@ import { Badge, Stars } from "@/components/ui";
 import type { Car } from "@/data/cars";
 import { SITE } from "@/data/site";
 import { logger } from "@/lib/logger";
-import { formatForeign, formatPKR } from "@/lib/utils";
+import { formatPKR } from "@/lib/utils";
 import { buildBookingMessage, openWhatsApp } from "@/lib/whatsapp";
 
 /** Full-screen vehicle detail modal with the complete spec sheet. */

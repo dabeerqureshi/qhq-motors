@@ -24,7 +24,7 @@ export const SITE = {
     tel: "+923326212431",
   },
 
-  email: "booking@qhqmotors.com",
+  email: "qureshidabeer92@gmail.com",
 
   address: {
     street: "Chenab Nagar",

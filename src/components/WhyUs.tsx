@@ -7,7 +7,6 @@ import {
   Headphones,
   Key,
   Plane,
-  Users,
 } from "lucide-react";
 import { RevealGroup, RevealItem, SectionHeading } from "@/components/Reveal";
 import { Counter } from "@/components/ui";

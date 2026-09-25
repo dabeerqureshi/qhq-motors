@@ -16,7 +16,7 @@ import {
 import Image from "next/image";
 import type { Car } from "@/data/cars";
 import { logger } from "@/lib/logger";
-import { formatForeign, formatPKR } from "@/lib/utils";
+import { formatPKR } from "@/lib/utils";
 import { buildBookingMessage, openWhatsApp } from "@/lib/whatsapp";
 import { Badge, Stars } from "@/components/ui";
 

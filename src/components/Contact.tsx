@@ -140,20 +140,40 @@ export function Contact() {
 
               {cards.map((c) => (
                 <RevealItem key={c.label}>
-                  <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-ink-950/60 p-5">
-                    <span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-gold-500/25 bg-gold-500/10 text-gold-300">
-                      <c.icon size={19} />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-[10.5px] font-bold tracking-[0.18em] text-slate-500 uppercase">
-                        {c.label}
-                      </p>
-                      <p className="truncate font-display text-base font-extrabold text-white">
-                        {c.value}
-                      </p>
-                      <p className="text-[11.5px] text-slate-400">{c.note}</p>
+                  {c.label === "Email" ? (
+                    <a
+                      href={`mailto:${c.value}`}
+                      className="card-glow flex items-center gap-4 rounded-2xl border border-white/10 bg-ink-950/60 p-5 transition hover:border-gold-400/35 hover:bg-white/5"
+                    >
+                      <span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-gold-500/25 bg-gold-500/10 text-gold-300">
+                        <c.icon size={19} />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-[10.5px] font-bold tracking-[0.18em] text-slate-500 uppercase">
+                          {c.label}
+                        </p>
+                        <p className="truncate font-display text-base font-extrabold text-gold-200">
+                          {c.value}
+                        </p>
+                        <p className="text-[11.5px] text-slate-400">{c.note}</p>
+                      </div>
+                    </a>
+                  ) : (
+                    <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-ink-950/60 p-5">
+                      <span className="grid size-12 shrink-0 place-items-center rounded-2xl border border-gold-500/25 bg-gold-500/10 text-gold-300">
+                        <c.icon size={19} />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-[10.5px] font-bold tracking-[0.18em] text-slate-500 uppercase">
+                          {c.label}
+                        </p>
+                        <p className="truncate font-display text-base font-extrabold text-white">
+                          {c.value}
+                        </p>
+                        <p className="text-[11.5px] text-slate-400">{c.note}</p>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </RevealItem>
               ))}
             </RevealGroup>

@@ -2,15 +2,11 @@
 
 import { motion } from "framer-motion";
 import {
-  BadgeCheck,
   Calendar,
   Check,
   MapPin,
   MessageCircle,
-  Plane,
-  Sparkles,
 } from "lucide-react";
-import { useState } from "react";
 import {
   Reveal,
   RevealGroup,
@@ -26,7 +22,6 @@ import { buildBookingMessage, openWhatsApp } from "@/lib/whatsapp";
 /** Transparent destination & monthly rates — simple and honest. */
 export function Rates() {
   const cars = useFleet();
-  const [selectedCity, setSelectedCity] = useState<string>("fsd");
 
   const alto = cars.find((c) => c.id.includes("alto")) ?? cars[1] ?? cars[0];
   const altis = cars.find((c) => c.id.includes("altis")) ?? cars[0];

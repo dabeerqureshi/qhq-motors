@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion"
 import {
   CalendarCheck,
   ChevronRight,
+  Mail,
   Menu,
   MessageCircle,
   Phone,
@@ -85,6 +86,12 @@ export function Header() {
             Airport pickup 24/7
           </p>
           <div className="flex items-center gap-5">
+            <a
+              href={`mailto:${SITE.email}`}
+              className="flex items-center gap-1.5 transition hover:text-gold-300"
+            >
+              <Mail size={13} /> {SITE.email}
+            </a>
             <a
               href={`tel:${SITE.phone.tel}`}
               className="flex items-center gap-1.5 transition hover:text-gold-300"
@@ -256,6 +263,12 @@ export function Header() {
               </nav>
 
               <div className="space-y-3 border-t border-white/10 p-5">
+                <a
+                  href={`mailto:${SITE.email}`}
+                  className="flex items-center justify-center gap-2 rounded-full border border-white/15 py-3 text-sm font-bold text-white transition hover:border-gold-400/50"
+                >
+                  <Mail size={15} className="text-gold-400" /> {SITE.email}
+                </a>
                 <a
                   href={`tel:${SITE.phone.tel}`}
                   className="flex items-center justify-center gap-2 rounded-full border border-white/15 py-3 text-sm font-bold text-white"
